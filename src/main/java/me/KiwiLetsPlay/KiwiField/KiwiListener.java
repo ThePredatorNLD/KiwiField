@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -533,128 +534,123 @@ public class KiwiListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onSnowballHit(EntityDamageByEntityEvent event) {
-		if (event.getEntity() instanceof Player) {
-			if (event.getDamager() instanceof org.bukkit.entity.Snowball) {
-				
-				if (event.getDamager().hasMetadata("mg")) {
-					Projectile proj = (Projectile) event.getDamager();
-					if (((Damageable) event.getEntity()).getHealth() <= 6 && event.getEntity() != proj.getShooter()) {
-						((Damageable) event.getEntity()).damage(6, proj.getShooter());
-						Player player = (Player) event.getEntity();
-						if (uwRL.containsKey(player.getName())) {
-							uwRL.remove(player.getName());
-						}
-						if (uwHG.containsKey(player.getName())) {
-							uwHG.remove(player.getName());
-						}
-						if (uwSN.containsKey(player.getName())) {
-							uwSN.remove(player.getName());
-						}
-						if (uwGR.containsKey(player.getName())) {
-							uwGR.remove(player.getName());
-						}
-						uwMG.put(player.getName(), 1);
-						if (proj.getLocation().getY() - event.getEntity().getLocation().getY() > 1.35d) {
-							headshot.put(((Player) event.getEntity()).getName(), 1);
-						}
-					} else {
-						((Damageable) event.getEntity()).damage(6);
-						Player player = (Player) event.getEntity();
-						if (uwRL.containsKey(player.getName())) {
-							uwRL.remove(player.getName());
-						}
-						if (uwHG.containsKey(player.getName())) {
-							uwHG.remove(player.getName());
-						}
-						if (uwSN.containsKey(player.getName())) {
-							uwSN.remove(player.getName());
-						}
-						if (uwGR.containsKey(player.getName())) {
-							uwGR.remove(player.getName());
-						}
-						uwMG.put(player.getName(), 1);
-					}
+		if (event.getEntityType() != EntityType.PLAYER) return;
+		if (event.getDamager().getType() != EntityType.SNOWBALL) return;
+		
+		Player player = (Player) event.getEntity();
+		
+		if (event.getDamager().hasMetadata("mg")) {
+			Projectile proj = (Projectile) event.getDamager();
+			if (((Damageable) event.getEntity()).getHealth() <= 6 && event.getEntity() != proj.getShooter()) {
+				((Damageable) event.getEntity()).damage(6, proj.getShooter());
+				if (uwRL.containsKey(player.getName())) {
+					uwRL.remove(player.getName());
 				}
-				if (event.getDamager().hasMetadata("hg")) {
-					Projectile proj = (Projectile) event.getDamager();
-					if (((Damageable) event.getEntity()).getHealth() <= 4 && event.getEntity() != proj.getShooter()) {
-						((Damageable) event.getEntity()).damage(4, proj.getShooter());
-						Player player = (Player) event.getEntity();
-						if (uwRL.containsKey(player.getName())) {
-							uwRL.remove(player.getName());
-						}
-						if (uwMG.containsKey(player.getName())) {
-							uwMG.remove(player.getName());
-						}
-						if (uwSN.containsKey(player.getName())) {
-							uwSN.remove(player.getName());
-						}
-						if (uwGR.containsKey(player.getName())) {
-							uwGR.remove(player.getName());
-						}
-						uwHG.put(player.getName(), 1);
-						if (proj.getLocation().getY() - event.getEntity().getLocation().getY() > 1.35d) {
-							headshot.put(((Player) event.getEntity()).getName(), 1);
-						}
-					} else {
-						((Damageable) event.getEntity()).damage(4);
-						Player player = (Player) event.getEntity();
-						if (uwRL.containsKey(player.getName())) {
-							uwRL.remove(player.getName());
-						}
-						if (uwMG.containsKey(player.getName())) {
-							uwMG.remove(player.getName());
-						}
-						if (uwSN.containsKey(player.getName())) {
-							uwSN.remove(player.getName());
-						}
-						if (uwGR.containsKey(player.getName())) {
-							uwGR.remove(player.getName());
-						}
-						uwHG.put(player.getName(), 1);
-					}
+				if (uwHG.containsKey(player.getName())) {
+					uwHG.remove(player.getName());
 				}
-				if (event.getDamager().hasMetadata("sn")) {
-					Projectile proj = (Projectile) event.getDamager();
-					if (((Damageable) event.getEntity()).getHealth() <= 10 && event.getEntity() != proj.getShooter()) {
-						((Damageable) event.getEntity()).damage(10, proj.getShooter());
-						Player player = (Player) event.getEntity();
-						if (uwRL.containsKey(player.getName())) {
-							uwRL.remove(player.getName());
-						}
-						if (uwHG.containsKey(player.getName())) {
-							uwHG.remove(player.getName());
-						}
-						if (uwMG.containsKey(player.getName())) {
-							uwMG.remove(player.getName());
-						}
-						if (uwGR.containsKey(player.getName())) {
-							uwGR.remove(player.getName());
-						}
-						uwSN.put(player.getName(), 1);
-						if (proj.getLocation().getY() - event.getEntity().getLocation().getY() > 1.35d) {
-							headshot.put(((Player) event.getEntity()).getName(), 1);
-						}
-					} else {
-						((Damageable) event.getEntity()).damage(10);
-						Player player = (Player) event.getEntity();
-						if (uwRL.containsKey(player.getName())) {
-							uwRL.remove(player.getName());
-						}
-						if (uwHG.containsKey(player.getName())) {
-							uwHG.remove(player.getName());
-						}
-						if (uwMG.containsKey(player.getName())) {
-							uwMG.remove(player.getName());
-						}
-						if (uwGR.containsKey(player.getName())) {
-							uwGR.remove(player.getName());
-						}
-						uwSN.put(player.getName(), 1);
-					}
+				if (uwSN.containsKey(player.getName())) {
+					uwSN.remove(player.getName());
 				}
+				if (uwGR.containsKey(player.getName())) {
+					uwGR.remove(player.getName());
+				}
+				uwMG.put(player.getName(), 1);
+				if (proj.getLocation().getY() - event.getEntity().getLocation().getY() > 1.35d) {
+					headshot.put(((Player) event.getEntity()).getName(), 1);
+				}
+			} else {
+				((Damageable) event.getEntity()).damage(6);
+				if (uwRL.containsKey(player.getName())) {
+					uwRL.remove(player.getName());
+				}
+				if (uwHG.containsKey(player.getName())) {
+					uwHG.remove(player.getName());
+				}
+				if (uwSN.containsKey(player.getName())) {
+					uwSN.remove(player.getName());
+				}
+				if (uwGR.containsKey(player.getName())) {
+					uwGR.remove(player.getName());
+				}
+				uwMG.put(player.getName(), 1);
 			}
 		}
+		if (event.getDamager().hasMetadata("hg")) {
+			Projectile proj = (Projectile) event.getDamager();
+			if (((Damageable) event.getEntity()).getHealth() <= 4 && event.getEntity() != proj.getShooter()) {
+				((Damageable) event.getEntity()).damage(4, proj.getShooter());
+				if (uwRL.containsKey(player.getName())) {
+					uwRL.remove(player.getName());
+				}
+				if (uwMG.containsKey(player.getName())) {
+					uwMG.remove(player.getName());
+				}
+				if (uwSN.containsKey(player.getName())) {
+					uwSN.remove(player.getName());
+				}
+				if (uwGR.containsKey(player.getName())) {
+					uwGR.remove(player.getName());
+				}
+				uwHG.put(player.getName(), 1);
+				if (proj.getLocation().getY() - event.getEntity().getLocation().getY() > 1.35d) {
+					headshot.put(((Player) event.getEntity()).getName(), 1);
+				}
+			} else {
+				((Damageable) event.getEntity()).damage(4);
+				if (uwRL.containsKey(player.getName())) {
+					uwRL.remove(player.getName());
+				}
+				if (uwMG.containsKey(player.getName())) {
+					uwMG.remove(player.getName());
+				}
+				if (uwSN.containsKey(player.getName())) {
+					uwSN.remove(player.getName());
+				}
+				if (uwGR.containsKey(player.getName())) {
+					uwGR.remove(player.getName());
+				}
+				uwHG.put(player.getName(), 1);
+			}
+		}
+		if (event.getDamager().hasMetadata("sn")) {
+			Projectile proj = (Projectile) event.getDamager();
+			if (((Damageable) event.getEntity()).getHealth() <= 10 && event.getEntity() != proj.getShooter()) {
+				((Damageable) event.getEntity()).damage(10, proj.getShooter());
+				if (uwRL.containsKey(player.getName())) {
+					uwRL.remove(player.getName());
+				}
+				if (uwHG.containsKey(player.getName())) {
+					uwHG.remove(player.getName());
+				}
+				if (uwMG.containsKey(player.getName())) {
+					uwMG.remove(player.getName());
+				}
+				if (uwGR.containsKey(player.getName())) {
+					uwGR.remove(player.getName());
+				}
+				uwSN.put(player.getName(), 1);
+				if (proj.getLocation().getY() - event.getEntity().getLocation().getY() > 1.35d) {
+					headshot.put(((Player) event.getEntity()).getName(), 1);
+				}
+			} else {
+				((Damageable) event.getEntity()).damage(10);
+				if (uwRL.containsKey(player.getName())) {
+					uwRL.remove(player.getName());
+				}
+				if (uwHG.containsKey(player.getName())) {
+					uwHG.remove(player.getName());
+				}
+				if (uwMG.containsKey(player.getName())) {
+					uwMG.remove(player.getName());
+				}
+				if (uwGR.containsKey(player.getName())) {
+					uwGR.remove(player.getName());
+				}
+				uwSN.put(player.getName(), 1);
+			}
+		}
+		
 	}
 	
 	private ItemStack setName(ItemStack is, String name, List<String> lore) {
@@ -664,5 +660,4 @@ public class KiwiListener implements Listener {
 		is.setItemMeta(im);
 		return is;
 	}
-	
 }
