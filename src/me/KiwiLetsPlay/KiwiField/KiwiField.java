@@ -29,8 +29,8 @@ public class KiwiField extends JavaPlugin {
 	}
 	
 	public KiwiField() {
-		  // Do nothing.
-		}
+		// Do nothing!
+	}
 	
 	public void onDisable() {
 		System.out.println("[KiwiField] Plugin deaktiviert");
