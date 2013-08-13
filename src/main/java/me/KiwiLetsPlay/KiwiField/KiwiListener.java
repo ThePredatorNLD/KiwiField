@@ -207,7 +207,6 @@ public class KiwiListener implements Listener {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onProjectileHit(ProjectileHitEvent event) {
 		if (event.getEntity() instanceof org.bukkit.entity.Snowball) {
@@ -532,7 +531,6 @@ public class KiwiListener implements Listener {
 		event.getEntity().getInventory().setItem(1, granade);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onSnowballHit(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof Player) {
