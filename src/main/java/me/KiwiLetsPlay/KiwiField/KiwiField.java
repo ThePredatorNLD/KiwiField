@@ -21,15 +21,10 @@ import org.bukkit.scoreboard.ScoreboardManager;
 
 public class KiwiField extends JavaPlugin {
 	
-	@SuppressWarnings("unused")
-	private KiwiField plugin;
-	
-	public KiwiField(KiwiField plugin) {
-		this.plugin = plugin;
-	}
+	private static KiwiField plugin;
 	
 	public KiwiField() {
-		// Do nothing!
+		plugin = this;
 	}
 	
 	public void onDisable() {
@@ -306,6 +301,10 @@ public class KiwiField extends JavaPlugin {
 		}
 		
 		return erfolg;
+	}
+	
+	public static KiwiField getInstance() {
+		return plugin;
 	}
 	
 	private ItemStack setName(ItemStack is, String name, List<String> lore) {
