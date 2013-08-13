@@ -21,6 +21,10 @@ import org.bukkit.scoreboard.ScoreboardManager;
 
 public class KiwiField extends JavaPlugin {
 	
+	private HashMap<String, UnitClass> classes = new HashMap<String, UnitClass>();
+	private ScoreboardManager manager;
+	private Scoreboard board;
+	
 	private static KiwiField plugin;
 	
 	public KiwiField() {
@@ -39,14 +43,6 @@ public class KiwiField extends JavaPlugin {
 		manager = Bukkit.getScoreboardManager();
 		board = manager.getMainScoreboard();
 	}
-	
-	HashMap<String, Integer> assaults = new HashMap<String, Integer>();
-	HashMap<String, Integer> supporters = new HashMap<String, Integer>();
-	HashMap<String, Integer> recons = new HashMap<String, Integer>();
-	HashMap<String, Integer> engineers = new HashMap<String, Integer>();
-	
-	ScoreboardManager manager;
-	Scoreboard board;
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
 		boolean erfolg = false;
@@ -79,16 +75,8 @@ public class KiwiField extends JavaPlugin {
 				
 				if (args[0].equals("assault")) {
 					player.getInventory().clear();
-					assaults.put(player.getName(), 1);
-					if (supporters.containsKey(player.getName())) {
-						supporters.remove(player.getName());
-					}
-					if (recons.containsKey(player.getName())) {
-						recons.remove(player.getName());
-					}
-					if (engineers.containsKey(player.getName())) {
-						engineers.remove(player.getName());
-					}
+					classes.put(player.getName(), UnitClass.ASSAULT);
+					
 					ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET, 1);
 					LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
 					lam.setColor(Color.fromRGB(59, 101, 76));
@@ -121,16 +109,8 @@ public class KiwiField extends JavaPlugin {
 				
 				if (args[0].equals("engineer")) {
 					player.getInventory().clear();
-					engineers.put(player.getName(), 1);
-					if (assaults.containsKey(player.getName())) {
-						assaults.remove(player.getName());
-					}
-					if (supporters.containsKey(player.getName())) {
-						supporters.remove(player.getName());
-					}
-					if (recons.containsKey(player.getName())) {
-						recons.remove(player.getName());
-					}
+					classes.put(player.getName(), UnitClass.ENGINEER);
+					
 					ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET, 1);
 					LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
 					lam.setColor(Color.fromRGB(84, 84, 84));
@@ -163,16 +143,8 @@ public class KiwiField extends JavaPlugin {
 				
 				if (args[0].equals("supporter")) {
 					player.getInventory().clear();
-					supporters.put(player.getName(), 1);
-					if (assaults.containsKey(player.getName())) {
-						assaults.remove(player.getName());
-					}
-					if (recons.containsKey(player.getName())) {
-						recons.remove(player.getName());
-					}
-					if (engineers.containsKey(player.getName())) {
-						engineers.remove(player.getName());
-					}
+					classes.put(player.getName(), UnitClass.SUPPORTER);
+					
 					ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET, 1);
 					LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
 					lam.setColor(Color.fromRGB(60, 50, 40));
@@ -205,16 +177,8 @@ public class KiwiField extends JavaPlugin {
 				
 				if (args[0].equals("recon")) {
 					player.getInventory().clear();
-					recons.put(player.getName(), 1);
-					if (assaults.containsKey(player.getName())) {
-						assaults.remove(player.getName());
-					}
-					if (supporters.containsKey(player.getName())) {
-						supporters.remove(player.getName());
-					}
-					if (engineers.containsKey(player.getName())) {
-						engineers.remove(player.getName());
-					}
+					classes.put(player.getName(), UnitClass.RECON);
+					
 					ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET, 1);
 					LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
 					lam.setColor(Color.fromRGB(30, 30, 30));
@@ -261,7 +225,7 @@ public class KiwiField extends JavaPlugin {
 					}
 					for (int p = 0; p < players.length; p++) {
 						if (board.getTeam(senderteam).getPlayers().contains(players[p])) {
-							if (assaults.containsKey(players[p].getName())) {
+							if (classes.get(players[p].getName()) == UnitClass.ASSAULT) {
 								if (players[p].getName() != sender.getName()) {
 									players[p].sendMessage(ChatColor.BLUE + "Player " + ChatColor.WHITE
 											+ sender.getName() + ChatColor.BLUE + " needs a medic!");
@@ -287,7 +251,7 @@ public class KiwiField extends JavaPlugin {
 					}
 					for (int p = 0; p < players.length; p++) {
 						if (board.getTeam(senderteam).getPlayers().contains(players[p])) {
-							if (assaults.containsKey(players[p].getName())) {
+							if (classes.get(players[p].getName()) == UnitClass.ENGINEER) {
 								if (players[p].getName() != sender.getName()) {
 									players[p].sendMessage(ChatColor.BLUE + "Player " + ChatColor.WHITE
 											+ sender.getName() + ChatColor.BLUE + " needs ammo!");
