@@ -56,7 +56,7 @@ public class KiwiListener implements Listener {
 	HashMap<String, Integer> headshot = new HashMap<String, Integer>();
 	
 	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerRightClick(PlayerInteractEvent event) {
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			final Player player = event.getPlayer();
@@ -207,7 +207,7 @@ public class KiwiListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onProjectileHit(ProjectileHitEvent event) {
 		if (event.getEntity() instanceof org.bukkit.entity.Snowball) {
 			final Entity snowballH = event.getEntity();
@@ -318,7 +318,7 @@ public class KiwiListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerPickUp(PlayerPickupItemEvent event) {
 		if (event.getItem().hasMetadata("ubrot") || event.getItem().hasMetadata("medikit")
 				|| event.getItem().hasMetadata("ammokit")) {
@@ -327,7 +327,7 @@ public class KiwiListener implements Listener {
 	}
 	
 	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerThrowMedikit(PlayerDropItemEvent event) {
 		
 		if (event.getItemDrop().getItemStack().getType() == Material.SLIME_BALL) {
@@ -439,7 +439,7 @@ public class KiwiListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		
 		boolean KillFail = false;
@@ -531,7 +531,7 @@ public class KiwiListener implements Listener {
 		event.getEntity().getInventory().setItem(1, granade);
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onSnowballHit(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof Player) {
 			if (event.getDamager() instanceof org.bukkit.entity.Snowball) {
