@@ -1,8 +1,20 @@
 package me.KiwiLetsPlay.KiwiField;
 
+import org.bukkit.Color;
+
 public enum UnitClass {
-	ASSAULT,
-	SUPPORTER,
-	RECON,
-	ENGINEER
+	ASSAULT(59, 101, 76),
+	SUPPORTER(60, 50, 40),
+	RECON(30, 30, 30),
+	ENGINEER(84, 84, 84);
+	
+	private UnitClass(int r, int g, int b) {
+		c = Color.fromRGB(r, g, b);
+	}
+	
+	private Color c;
+	
+	public Color getArmorColor() {
+		return c;
+	}
 }
