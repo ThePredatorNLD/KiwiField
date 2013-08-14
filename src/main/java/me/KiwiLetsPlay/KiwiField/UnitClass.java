@@ -17,4 +17,12 @@ public enum UnitClass {
 	public Color getArmorColor() {
 		return c;
 	}
+	
+	public static UnitClass fromString(String s) {
+		String i = s.toLowerCase();
+		for (UnitClass val : UnitClass.values()) {
+			if (val.name().toLowerCase().startsWith(i)) return val;
+		}
+		return null;
+	}
 }
