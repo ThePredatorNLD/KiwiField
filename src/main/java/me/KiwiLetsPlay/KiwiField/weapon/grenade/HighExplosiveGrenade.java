@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class HighExplosiveGrenade implements Grenade {
 	
@@ -23,7 +24,9 @@ public class HighExplosiveGrenade implements Grenade {
 	@Override
 	public ItemStack getItemStack() {
 		ItemStack is = new ItemStack(Material.CLAY_BALL, 1);
-		is.getItemMeta().setDisplayName(getName());
+		ItemMeta im = is.getItemMeta();
+		im.setDisplayName(getName());
+		is.setItemMeta(im);
 		return is;
 	}
 	

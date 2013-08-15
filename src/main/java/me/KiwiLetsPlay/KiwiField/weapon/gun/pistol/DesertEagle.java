@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
 
@@ -17,7 +18,9 @@ public class DesertEagle implements Gun {
 	@Override
 	public ItemStack getItemStack() {
 		ItemStack is = new ItemStack(Material.FLINT, 1);
-		is.getItemMeta().setDisplayName("Desert Eagle");
+		ItemMeta im = is.getItemMeta();
+		im.setDisplayName("Desert Eagle");
+		is.setItemMeta(im);
 		return is;
 	}
 	
