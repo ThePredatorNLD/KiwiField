@@ -22,7 +22,7 @@ public class MP7 implements Gun {
 	
 	@Override
 	public double getDamage() {
-		return 6;
+		return 5;
 	}
 	
 	@Override
@@ -60,4 +60,8 @@ public class MP7 implements Gun {
 		return true;
 	}
 	
+	@Override
+	public boolean isArmorPiercing() {
+		return false;
+	}
 }

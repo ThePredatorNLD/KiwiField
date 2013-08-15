@@ -25,7 +25,7 @@ public class DesertEagle implements Gun {
 	
 	@Override
 	public int getFiringCooldown() {
-		return 240;
+		return 390;
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class DesertEagle implements Gun {
 	
 	@Override
 	public double getBaseRecoil() {
-		return 2;
+		return 9;
 	}
 	
 	@Override
@@ -57,5 +57,10 @@ public class DesertEagle implements Gun {
 	@Override
 	public boolean isAutomatic() {
 		return false;
+	}
+	
+	@Override
+	public boolean isArmorPiercing() {
+		return true;
 	}
 }

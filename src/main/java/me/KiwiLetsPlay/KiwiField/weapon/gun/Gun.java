@@ -14,4 +14,5 @@ public interface Gun extends Weapon {
 	
 	public boolean isAutomatic();
 	
+	public boolean isArmorPiercing();
 }
