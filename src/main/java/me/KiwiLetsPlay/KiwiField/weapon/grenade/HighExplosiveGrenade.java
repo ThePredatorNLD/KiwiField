@@ -58,6 +58,8 @@ public class HighExplosiveGrenade implements Grenade {
 			double dist = le.getLocation().distanceSquared(i.getLocation()) / 3;
 			double dmg = getDamage() / (dist + 1);
 			
+			if (dist > 25) return;
+			
 			if (le instanceof Player) {
 				Player p = (Player) le;
 				if (p.getInventory().getHelmet() != null) {
