@@ -1,8 +1,6 @@
 package me.KiwiLetsPlay.KiwiField;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import me.KiwiLetsPlay.KiwiField.KiwiField;
 import me.KiwiLetsPlay.KiwiField.weapon.Weapon;
@@ -36,9 +34,9 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class KiwiListener implements Listener {
 	
@@ -58,9 +56,8 @@ public class KiwiListener implements Listener {
 				event.setCancelled(true);
 			}
 		} else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			final Player player = event.getPlayer();
+			Player player = event.getPlayer();
 			if (player.getItemInHand() == null) return;
-			if (!(player.getItemInHand().hasItemMeta() && player.getItemInHand().getItemMeta().hasLore())) return;
 			
 			Weapon w = getWeaponFromItemStack(player.getItemInHand());
 			if (w == null) return;
@@ -158,12 +155,25 @@ public class KiwiListener implements Listener {
 		}
 		
 		event.setDeathMessage(sb.toString());
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerRespawn(PlayerRespawnEvent event) {
+		Player player = event.getPlayer();
+		player.setNoDamageTicks(50);
+		player.closeInventory();
+		player.getInventory().clear();
 		
-		// Should be moved to respawn!
-		List<String> gr = new ArrayList<String>();
-		gr.add(ChatColor.GRAY + "M67");
-		ItemStack grenade = setName(new ItemStack(Material.CLAY_BALL), "Grenade", gr);
-		event.getEntity().getInventory().setItem(1, grenade);
+		// Subject to change
+		player.getInventory().setItem(0, new MP7().getItemStack());
+		player.getInventory().setItem(1, new DesertEagle().getItemStack());
+		player.getInventory().setItem(2, null); // TODO: Knife
+		player.getInventory().setItem(3, new HighExplosiveGrenade().getItemStack());
+		
+		player.getInventory().setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE, 1));
+		player.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));
+		
+		player.getInventory().setHeldItemSlot(1);
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -229,14 +239,6 @@ public class KiwiListener implements Listener {
 		if (b1.getBlock().isEmpty() && b2.getBlock().isEmpty() && b3.getBlock().isEmpty() && b4.getBlock().isEmpty()) {
 			ProjectileUtil.setJumping(p, true);
 		}
-	}
-	
-	private ItemStack setName(ItemStack is, String name, List<String> lore) {
-		ItemMeta im = is.getItemMeta();
-		im.setDisplayName(name);
-		im.setLore(lore);
-		is.setItemMeta(im);
-		return is;
 	}
 	
 	private Weapon getWeaponFromItemStack(ItemStack i) {
