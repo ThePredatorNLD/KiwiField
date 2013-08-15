@@ -14,11 +14,9 @@ import me.KiwiLetsPlay.KiwiField.weapon.gun.smg.MP7;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -34,7 +32,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -42,16 +39,12 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 
 public class KiwiListener implements Listener {
-	
-	private KiwiField plugin;
 	
 	private static HashMap<String, Boolean> headshot = new HashMap<String, Boolean>();
 	
 	public KiwiListener() {
-		this.plugin = KiwiField.getInstance();
 		headshot = new HashMap<String, Boolean>();
 		
 		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new TickListener(), 1, 1);
@@ -99,147 +92,14 @@ public class KiwiListener implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onProjectileHit(ProjectileHitEvent event) {
-		if (event.getEntityType() != EntityType.SNOWBALL) return;
-		
-		final Snowball snowballH = (Snowball) event.getEntity();
-		if (snowballH.hasMetadata("grenade")) {
-			snowballH.getWorld().playSound(snowballH.getLocation(), Sound.DIG_STONE, 1, 2);
-			final Item grsno = snowballH.getWorld().dropItem(snowballH.getLocation(), new ItemStack(Material.CLAY_BALL,
-					1));
-			grsno.setMetadata("ubrot", new FixedMetadataValue(plugin, true));
-			
-			// XXX: Temporary, should be moved.
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				public void run() {
-					
-					List<Entity> entities = snowballH.getNearbyEntities(3, 3, 3);
-					for (Entity entity : entities) {
-						if (entity.getType() == EntityType.PLAYER) {
-							Player player = (Player) entity;
-							Projectile proj = (Projectile) snowballH;
-							
-							if (player.getHealth() <= 15) {
-								// Make sure that the player WILL take this damage
-								player.setNoDamageTicks(0);
-								player.damage(15, proj);
-							} else {
-								// Directly modify health to avoid Minecraft hit protection
-								player.setHealth(player.getHealth() - 6);
-							}
-						}
-					}
-					grsno.remove();
-					grsno.getWorld().playSound(grsno.getLocation(), Sound.EXPLODE, 10, 1);
-					grsno.getWorld().playEffect(grsno.getLocation(), Effect.MOBSPAWNER_FLAMES, 4);
-				}
-			}, 50L);
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerPickUp(PlayerPickupItemEvent event) {
 		event.setCancelled(true);
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerThrowMedikit(PlayerDropItemEvent event) {
-		
-		// To be removed after proper implementation of throwables
-		
-		switch (event.getItemDrop().getItemStack().getType()) {
-		/* Disable Medikits and Ammokits
-		 * case IRON_INGOT:
-			if (!(checkWeaponCooledDown(event.getPlayer()))) {
-				event.setCancelled(true);
-				return;
-			}
-			
-			weaponCooldown.put(event.getPlayer().getName(), System.currentTimeMillis() + 5000);
-			
-			final Item medikit = event.getItemDrop();
-			medikit.setMetadata("medikit", new FixedMetadataValue(plugin, true));
-			event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.ENDERDRAGON_WINGS, 0.5f, 2);
-			event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.DIG_GRAVEL, 0.5f, 2);
-			
-			List<Entity> healed = medikit.getNearbyEntities(3, 3, 3);
-			for (int i = 0; i < healed.size(); i++) {
-				final Entity entity = medikit.getNearbyEntities(3, 3, 3).get(i);
-				if (entity instanceof Player) {
-					((Player) entity).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 2));
-					((Player) entity).setFoodLevel(20);
-				}
-			}
-			
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				public void run() {
-					medikit.remove();
-				}
-			}, 100L);
-			
-			List<String> mk = new ArrayList<String>();
-			mk.add(ChatColor.GRAY + "Medikit");
-			ItemStack medi = setName(new ItemStack(Material.IRON_INGOT), "Medikit", mk);
-			
-			event.getPlayer().getInventory().setItem(3, medi);
-			event.getPlayer().updateInventory();
-			return;
-		case GOLD_INGOT:
-			if (!(checkWeaponCooledDown(event.getPlayer()))) {
-				event.setCancelled(true);
-				return;
-			}
-			
-			weaponCooldown.put(event.getPlayer().getName(), System.currentTimeMillis() + 5000);
-			
-			final Item ammokit = event.getItemDrop();
-			ammokit.setMetadata("ammokit", new FixedMetadataValue(plugin, true));
-			event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.ENDERDRAGON_WINGS, 0.5f, 2);
-			event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.DIG_WOOD, 0.5f, 1);
-			
-			List<Entity> resupplied = ammokit.getNearbyEntities(3, 3, 3);
-			for (int i = 0; i < resupplied.size(); i++) {
-				final Entity entity = ammokit.getNearbyEntities(3, 3, 3).get(i);
-				if (entity instanceof Player) {
-					Player player = (Player) entity;
-					List<String> gr = new ArrayList<String>();
-					gr.add(ChatColor.GRAY + "M67");
-					ItemStack grenade = setName(new ItemStack(Material.CLAY_BALL), "Grenade", gr);
-					player.getInventory().setItem(1, grenade);
-					if (player.getInventory().getHelmet() != null) {
-						player.getInventory().getHelmet().setDurability((short) 0);
-					}
-					if (player.getInventory().getChestplate() != null) {
-						player.getInventory().getChestplate().setDurability((short) 0);
-					}
-					if (player.getInventory().getLeggings() != null) {
-						player.getInventory().getLeggings().setDurability((short) 0);
-					}
-					if (player.getInventory().getBoots() != null) {
-						player.getInventory().getBoots().setDurability((short) 0);
-					}
-				}
-			}
-			
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				public void run() {
-					ammokit.remove();
-				}
-			}, 100L);
-			
-			List<String> ak = new ArrayList<String>();
-			ak.add(ChatColor.GRAY + "Ammokit");
-			ItemStack ammo = setName(new ItemStack(Material.GOLD_INGOT), "Ammokit", ak);
-			
-			event.getPlayer().getInventory().setItem(3, ammo);
-			event.getPlayer().updateInventory();
-			return;*/
-		default:
+	public void onPlayerDropItem(PlayerDropItemEvent event) {
+		if (event.getPlayer().getGameMode() == GameMode.ADVENTURE) {
 			event.setCancelled(true);
-			return;
 		}
 	}
 	
