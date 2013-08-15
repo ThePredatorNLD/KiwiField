@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -35,6 +36,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -328,6 +330,27 @@ public class KiwiListener implements Listener {
 		}
 		
 		event.setCancelled(true);
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerMove(PlayerMoveEvent event) {
+		Player p = event.getPlayer();
+		Location from = event.getFrom();
+		Location to = event.getTo();
+		
+		if (from.getX() != to.getX() || from.getZ() != to.getZ()) {
+			ProjectileUtil.setMoving(p, true);
+		} else {
+			ProjectileUtil.setMoving(p, false);
+		}
+		
+		Location b1 = new Location(to.getWorld(), to.getX() + 0.3, to.getY() - 0.75, to.getZ() + 0.3);
+		Location b2 = new Location(to.getWorld(), to.getX() - 0.3, to.getY() - 0.75, to.getZ() + 0.3);
+		Location b3 = new Location(to.getWorld(), to.getX() + 0.3, to.getY() - 0.75, to.getZ() - 0.3);
+		Location b4 = new Location(to.getWorld(), to.getX() - 0.3, to.getY() - 0.75, to.getZ() - 0.3);
+		if (b1.getBlock().isEmpty() && b2.getBlock().isEmpty() && b3.getBlock().isEmpty() && b4.getBlock().isEmpty()) {
+			ProjectileUtil.setJumping(p, true);
+		}
 	}
 	
 	private ItemStack setName(ItemStack is, String name, List<String> lore) {
