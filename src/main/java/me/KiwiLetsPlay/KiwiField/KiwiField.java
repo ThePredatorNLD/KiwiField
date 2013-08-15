@@ -31,17 +31,18 @@ public class KiwiField extends JavaPlugin {
 		plugin = this;
 	}
 	
-	public void onDisable() {
-		System.out.println("[KiwiField] Plugin deaktiviert");
-	}
-	
 	public void onEnable() {
 		PluginManager pm = this.getServer().getPluginManager();
-		pm.registerEvents(new KiwiListener(this), this);
-		System.out.println("[KiwiField] Plugin aktiviert");
+		pm.registerEvents(new KiwiListener(), this);
+		//System.out.println("[KiwiField] Plugin aktiviert");
 		
 		manager = Bukkit.getScoreboardManager();
 		board = manager.getMainScoreboard();
+	}
+	
+	public void onDisable() {
+		//System.out.println("[KiwiField] Plugin deaktiviert");
+		Bukkit.getScheduler().cancelTasks(this);
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
