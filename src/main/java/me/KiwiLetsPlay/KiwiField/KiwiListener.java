@@ -51,6 +51,7 @@ public class KiwiListener implements Listener {
 		headshot = new HashMap<String, Boolean>();
 		
 		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new TickListener(), 1, 1);
+		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new SnowballRemover(), 20, 20);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
