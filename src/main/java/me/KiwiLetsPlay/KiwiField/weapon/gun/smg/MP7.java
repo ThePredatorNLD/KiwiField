@@ -16,8 +16,9 @@ public class MP7 implements Gun {
 	
 	@Override
 	public ItemStack getItemStack() {
-		ItemStack i = new ItemStack(Material.SLIME_BALL, 1);
-		return i;
+		ItemStack is = new ItemStack(Material.SLIME_BALL, 1);
+		is.getItemMeta().setDisplayName(getName());
+		return is;
 	}
 	
 	@Override

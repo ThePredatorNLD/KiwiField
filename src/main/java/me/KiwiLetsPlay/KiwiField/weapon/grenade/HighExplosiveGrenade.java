@@ -3,6 +3,7 @@ package me.KiwiLetsPlay.KiwiField.weapon.grenade;
 import java.util.List;
 
 import org.bukkit.Effect;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -21,7 +22,9 @@ public class HighExplosiveGrenade implements Grenade {
 	
 	@Override
 	public ItemStack getItemStack() {
-		return null;
+		ItemStack is = new ItemStack(Material.CLAY_BALL, 1);
+		is.getItemMeta().setDisplayName(getName());
+		return is;
 	}
 	
 	@Override
