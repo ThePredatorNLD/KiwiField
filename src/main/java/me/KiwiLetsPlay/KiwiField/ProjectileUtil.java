@@ -55,6 +55,7 @@ public final class ProjectileUtil {
 		p.setShooter(player);
 		p.setMetadata("weaponname", new FixedMetadataValue(KiwiField.getInstance(), g.getName()));
 		p.setMetadata("damage", new FixedMetadataValue(KiwiField.getInstance(), g.getDamage()));
+		p.setMetadata("piercing", new FixedMetadataValue(KiwiField.getInstance(), g.isArmorPiercing()));
 		return p;
 	}
 	

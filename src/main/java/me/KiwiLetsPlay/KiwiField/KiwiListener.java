@@ -37,6 +37,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -293,18 +294,24 @@ public class KiwiListener implements Listener {
 		
 		LivingEntity entity = (LivingEntity) event.getEntity();
 		Projectile proj = (Projectile) event.getDamager();
-		if (!(proj.hasMetadata("damage"))) {
-			return;
-		}
 		
 		double damage = proj.getMetadata("damage").get(0).asDouble();
+		boolean piercing = proj.getMetadata("piercing").get(0).asBoolean();
 		
 		if (event.getEntityType() == EntityType.PLAYER) {
 			Player player = (Player) event.getEntity();
 			
 			boolean hs = proj.getLocation().getY() - event.getEntity().getLocation().getY() > 1.35;
 			headshot.put(player.getName(), hs);
-			if (hs) damage *= 3;
+			if (hs) damage *= 4;
+			PlayerInventory i = player.getInventory();
+			if ((hs && i.getHelmet().getType() != Material.AIR) || (!hs && i.getChestplate().getType() != Material.AIR)) {
+				if (piercing) {
+					damage *= 0.75;
+				} else {
+					damage *= 0.5;
+				}
+			}
 		}
 		
 		// Make sure that the player will take damage
