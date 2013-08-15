@@ -7,6 +7,7 @@ import java.util.List;
 import me.KiwiLetsPlay.KiwiField.KiwiField;
 import me.KiwiLetsPlay.KiwiField.weapon.Weapon;
 import me.KiwiLetsPlay.KiwiField.weapon.grenade.Grenade;
+import me.KiwiLetsPlay.KiwiField.weapon.grenade.HighExplosiveGrenade;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.pistol.DesertEagle;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.smg.MP7;
@@ -85,6 +86,13 @@ public class KiwiListener implements Listener {
 					
 					ProjectileUtil.setFiringWeapon(player, g, true);
 				}
+			} else if (w instanceof Grenade) {
+				if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
+				
+				Grenade g = (Grenade) w;
+				Item i = ProjectileUtil.launchGrenade(player, g);
+				ProjectileUtil.setWeaponCooldown(player, g, true);
+				Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), new GrenadeExploder(g, i), g.getFuseLenght());
 			}
 			
 		}
@@ -237,27 +245,39 @@ public class KiwiListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		
 		EntityDamageEvent lastDmg = event.getEntity().getLastDamageCause();
+		if (lastDmg == null) return;
+		
 		StringBuilder sb = new StringBuilder();
 		switch (lastDmg.getCause()) {
 		case PROJECTILE:
 			EntityDamageByEntityEvent projectileHit = (EntityDamageByEntityEvent) lastDmg;
-			Projectile proj = (Projectile) projectileHit.getDamager();
-			if (proj == null || proj.getType() != EntityType.SNOWBALL || !(proj.hasMetadata("weaponname"))) {
+			if (projectileHit.getDamager() == null || !(projectileHit.getDamager().hasMetadata("weaponname"))) {
 				// Death caused by a vanilla Minecraft projectile, don't alter
 				return;
 			}
-			Player shooter = (Player) proj.getShooter();
-			sb.append(ChatColor.GREEN).append(shooter.getName()).append(ChatColor.WHITE);
-			sb.append(" [");
-			sb.append(proj.getMetadata("weaponname").get(0).asString());
-			sb.append("] ");
-			if (headshot.containsKey(event.getEntity().getName())
-					&& headshot.get(event.getEntity().getName()).booleanValue()) {
-				sb.append(ChatColor.GOLD).append("<+> ");
+			if (projectileHit.getDamager().getType() == EntityType.SNOWBALL) {
+				Projectile proj = (Projectile) projectileHit.getDamager();
+				Player shooter = (Player) proj.getShooter();
+				Player corpse = event.getEntity();
+				sb.append(ChatColor.GREEN).append(shooter.getName()).append(ChatColor.WHITE);
+				sb.append(" [");
+				sb.append(proj.getMetadata("weaponname").get(0).asString());
+				sb.append("] ");
+				if (headshot.containsKey(corpse.getName()) && headshot.get(corpse.getName()).booleanValue()) {
+					sb.append(ChatColor.GOLD).append("<+> ");
+				}
+				sb.append(ChatColor.RED).append(corpse.getName());
+			} else if (projectileHit.getDamager().getType() == EntityType.DROPPED_ITEM) {
+				Item item = (Item) projectileHit.getDamager();
+				Player shooter = (Player) item.getMetadata("shooter").get(0).value();
+				Player corpse = event.getEntity();
+				sb.append(ChatColor.GREEN).append(shooter.getName()).append(ChatColor.WHITE);
+				sb.append(" [");
+				sb.append(item.getMetadata("weaponname").get(0).asString());
+				sb.append("] ");
+				sb.append(ChatColor.RED).append(corpse.getName());
 			}
-			sb.append(ChatColor.RED).append(event.getEntity().getName());
 			break;
 		case ENTITY_ATTACK:
 			// TODO: Filter out punching with weapons.
@@ -307,7 +327,7 @@ public class KiwiListener implements Listener {
 			headshot.put(player.getName(), hs);
 			if (hs) damage *= 4;
 			PlayerInventory i = player.getInventory();
-			if ((hs && i.getHelmet().getType() != Material.AIR) || (!hs && i.getChestplate().getType() != Material.AIR)) {
+			if ((hs && i.getHelmet() != null) || (!hs && i.getChestplate() != null)) {
 				if (piercing) {
 					damage *= 0.75;
 				} else {
@@ -324,10 +344,8 @@ public class KiwiListener implements Listener {
 				entity.setNoDamageTicks(0);
 			}
 			entity.setLastDamageCause(event);
-			entity.damage(damage);
-		} else {
-			entity.damage(damage);
 		}
+		entity.damage(damage);
 		
 		event.setCancelled(true);
 	}
@@ -364,6 +382,7 @@ public class KiwiListener implements Listener {
 	private Weapon getWeaponFromItemStack(ItemStack i) {
 		// TODO: Implement weapons.
 		if (i.getType() == Material.FLINT) return new DesertEagle();
+		if (i.getType() == Material.CLAY_BALL) return new HighExplosiveGrenade();
 		return new MP7();
 	}
 }
@@ -411,13 +430,16 @@ class SnowballRemover implements Runnable {
 class GrenadeExploder implements Runnable {
 	
 	Grenade g;
+	Item i;
 	
-	GrenadeExploder(Grenade grenade) {
+	GrenadeExploder(Grenade grenade, Item item) {
 		g = grenade;
+		i = item;
 	}
 	
 	@Override
 	public void run() {
-		g.explode();
+		g.explode(i);
+		i.remove();
 	}
 }

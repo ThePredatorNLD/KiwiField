@@ -2,11 +2,13 @@ package me.KiwiLetsPlay.KiwiField;
 
 import java.util.HashMap;
 
+import me.KiwiLetsPlay.KiwiField.weapon.Weapon;
 import me.KiwiLetsPlay.KiwiField.weapon.grenade.Grenade;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
 
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -59,9 +61,23 @@ public final class ProjectileUtil {
 		return p;
 	}
 	
-	public static Projectile launchGrenade(Player p, Grenade g) {
-		// TODO
-		return null;
+	public static Item launchGrenade(Player player, Grenade g) {
+		Location spawn = player.getLocation().add(0, 1.2, 0);
+		spawn.add(spawn.getDirection().multiply(0.3));
+		spawn.setPitch(0);
+		spawn.add(spawn.getDirection().multiply(0.2));
+		
+		Vector dir = player.getLocation().getDirection();
+		dir.setY(dir.getY() + 0.06);
+		dir = dir.multiply(1.1);
+		
+		Item i = player.getWorld().dropItem(spawn, player.getItemInHand());
+		player.getInventory().clear(player.getInventory().getHeldItemSlot());
+		i.setPickupDelay(Integer.MAX_VALUE);
+		i.setVelocity(dir);
+		i.setMetadata("weaponname", new FixedMetadataValue(KiwiField.getInstance(), g.getName()));
+		i.setMetadata("shooter", new FixedMetadataValue(KiwiField.getInstance(), player));
+		return i;
 	}
 	
 	public static void setMoving(Player player, boolean value) {
@@ -119,9 +135,9 @@ public final class ProjectileUtil {
 		}
 	}
 	
-	public static void setWeaponCooldown(Player player, Gun g, boolean value) {
+	public static void setWeaponCooldown(Player player, Weapon w, boolean value) {
 		if (value) {
-			weaponCooldown.put(player.getName(), System.currentTimeMillis() + g.getFiringCooldown());
+			weaponCooldown.put(player.getName(), System.currentTimeMillis() + w.getFiringCooldown());
 		} else {
 			weaponCooldown.remove(player.getName());
 		}
