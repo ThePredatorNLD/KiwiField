@@ -82,13 +82,13 @@ public class HighExplosiveGrenade implements Grenade {
 			le.damage(dmg);
 		}
 		
-		i.getWorld().playSound(i.getLocation(), Sound.EXPLODE, 0.5f, 0.1f);
+		i.getWorld().playSound(i.getLocation(), Sound.EXPLODE, 0.75f, 0.1f);
 		i.getWorld().playEffect(i.getLocation(), Effect.MOBSPAWNER_FLAMES, 5);
 		i.getWorld().playEffect(i.getLocation(), Effect.SMOKE, 4);
 	}
 	
 	@Override
 	public long getFuseLenght() {
-		return 70;
+		return 55;
 	}
 }

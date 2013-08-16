@@ -52,7 +52,7 @@ public class DesertEagle implements Gun {
 	
 	@Override
 	public double getRecoilModifier() {
-		return 2;
+		return 1;
 	}
 	
 	@Override

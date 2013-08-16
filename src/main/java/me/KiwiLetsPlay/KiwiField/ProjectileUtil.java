@@ -35,7 +35,7 @@ public final class ProjectileUtil {
 		
 		Location dirLoc = player.getLocation();
 		double spray = g.getBaseRecoil();
-		double sprayfactor = 1;
+		double sprayfactor = 0;
 		if (isMoving(player)) {
 			if (player.isSprinting()) {
 				sprayfactor += 1;
@@ -45,14 +45,15 @@ public final class ProjectileUtil {
 		}
 		if (player.isSneaking()) sprayfactor -= 0.5;
 		if (isJumping(player)) sprayfactor += 1.5;
-		spray *= sprayfactor;
+		sprayfactor *= g.getRecoilModifier();
+		spray *= (sprayfactor + 1);
 		
 		dirLoc.setPitch((float) (dirLoc.getPitch() - (spray / 2) + Math.random() * spray));
 		dirLoc.setYaw((float) (dirLoc.getYaw() - (spray / 2) + Math.random() * spray));
 		
 		Vector dir = dirLoc.getDirection();
-		dir.setY(dir.getY() + 0.06);
-		dir = dir.multiply(3);
+		dir.setY(dir.getY() + (0.6 / g.getBulletSpeed()));
+		dir = dir.multiply(0.3 * g.getBulletSpeed());
 		
 		Projectile p = (Projectile) player.getWorld().spawnEntity(spawn, EntityType.SNOWBALL);
 		p.setVelocity(dir);
