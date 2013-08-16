@@ -44,17 +44,17 @@ public class Nova implements Shotgun {
 	
 	@Override
 	public double getBaseRecoil() {
-		return 4;
+		return 8;
 	}
 	
 	@Override
 	public double getRecoilModifier() {
-		return 2;
+		return 1.2;
 	}
 	
 	@Override
 	public double getPelletCount() {
-		return 7;
+		return 8;
 	}
 	
 	@Override
@@ -69,6 +69,6 @@ public class Nova implements Shotgun {
 	
 	@Override
 	public boolean isArmorPiercing() {
-		return false;
+		return true;
 	}
 }
