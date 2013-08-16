@@ -35,15 +35,17 @@ public final class ProjectileUtil {
 		
 		Location dirLoc = player.getLocation();
 		double spray = g.getBaseRecoil();
+		double sprayfactor = 1;
 		if (isMoving(player)) {
 			if (player.isSprinting()) {
-				spray *= 2;
+				sprayfactor += 1;
 			} else {
-				spray *= 1.5;
+				sprayfactor += 0.5;
 			}
 		}
-		if (player.isSneaking()) spray /= 2;
-		if (isJumping(player)) spray *= 3;
+		if (player.isSneaking()) sprayfactor -= 0.5;
+		if (isJumping(player)) sprayfactor += 1.5;
+		spray *= sprayfactor;
 		
 		dirLoc.setPitch((float) (dirLoc.getPitch() - (spray / 2) + Math.random() * spray));
 		dirLoc.setYaw((float) (dirLoc.getYaw() - (spray / 2) + Math.random() * spray));
