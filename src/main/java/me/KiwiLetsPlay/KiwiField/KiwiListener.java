@@ -9,6 +9,8 @@ import me.KiwiLetsPlay.KiwiField.weapon.grenade.HighExplosiveGrenade;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.pistol.DesertEagle;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.smg.MP7;
+import me.KiwiLetsPlay.KiwiField.weapon.heavy.Nova;
+import me.KiwiLetsPlay.KiwiField.weapon.heavy.Shotgun;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -62,7 +64,20 @@ public class KiwiListener implements Listener {
 			Weapon w = getWeaponFromItemStack(player.getItemInHand());
 			if (w == null) return;
 			
-			if (w instanceof Gun) {
+			if (w instanceof Shotgun) {
+				Shotgun g = (Shotgun) w;
+				
+				if (!(ProjectileUtil.isFiringWeapon(player))) {
+					if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
+					for (int i = 0; i < g.getPelletCount(); i++) {
+						ProjectileUtil.launchBullet(player, g);
+					}
+					ProjectileUtil.setWeaponCooldown(player, g, true);
+					w.playFiringSound(player);
+				}
+				
+				ProjectileUtil.setFiringWeapon(player, g, true);
+			} else if (w instanceof Gun) {
 				Gun g = (Gun) w;
 				if (g.isAutomatic()) {
 					ProjectileUtil.setFiringWeapon(player, g, true);
@@ -84,7 +99,6 @@ public class KiwiListener implements Listener {
 				ProjectileUtil.setWeaponCooldown(player, g, true);
 				Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), new GrenadeExploder(g, i), g.getFuseLenght());
 			}
-			
 		}
 	}
 	
@@ -169,6 +183,7 @@ public class KiwiListener implements Listener {
 		player.getInventory().setItem(1, new DesertEagle().getItemStack());
 		player.getInventory().setItem(2, null); // TODO: Knife
 		player.getInventory().setItem(3, new HighExplosiveGrenade().getItemStack());
+		player.getInventory().setItem(4, new Nova().getItemStack());
 		
 		player.getInventory().setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE, 1));
 		player.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));
@@ -245,6 +260,7 @@ public class KiwiListener implements Listener {
 		// TODO: Implement weapons.
 		if (i.getType() == Material.FLINT) return new DesertEagle();
 		if (i.getType() == Material.CLAY_BALL) return new HighExplosiveGrenade();
+		if (i.getType() == Material.GLOWSTONE_DUST) return new Nova();
 		return new MP7();
 	}
 }
@@ -272,6 +288,7 @@ class TickListener implements Runnable {
 	private Weapon getWeaponFromItemStack(ItemStack i) {
 		// TODO: Implement weapons.
 		if (i.getType() == Material.FLINT) return new DesertEagle();
+		if (i.getType() == Material.GLOWSTONE_DUST) return new Nova();
 		return new MP7();
 	}
 }
