@@ -3,8 +3,8 @@ package me.KiwiLetsPlay.KiwiField.weapon.grenade;
 import java.util.List;
 
 import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -32,7 +32,7 @@ public class HighExplosiveGrenade implements Grenade {
 	
 	@Override
 	public double getDamage() {
-		return 80;
+		return 100;
 	}
 	
 	@Override
@@ -49,15 +49,17 @@ public class HighExplosiveGrenade implements Grenade {
 	public void explode(Item i) {
 		if (!(i.hasMetadata("shooter"))) return;
 		Player shooter = (Player) i.getMetadata("shooter").get(0).value();
+		Location loc = i.getLocation();
 		
 		List<Entity> entities = i.getNearbyEntities(8, 3, 8);
 		for (Entity entity : entities) {
 			if (!(entity instanceof LivingEntity)) continue;
 			LivingEntity le = (LivingEntity) entity;
 			
-			double dist = le.getLocation().distanceSquared(i.getLocation()) / 3;
+			double dist = le.getLocation().distanceSquared(loc) / 3;
 			double dmg = getDamage() / (dist + 1);
 			
+			if (!(le.hasLineOfSight(i))) dmg *= 0.25;
 			if (dist > 25) return;
 			
 			if (le instanceof Player) {
@@ -82,9 +84,15 @@ public class HighExplosiveGrenade implements Grenade {
 			le.damage(dmg);
 		}
 		
-		i.getWorld().playSound(i.getLocation(), Sound.EXPLODE, 0.75f, 0.1f);
-		i.getWorld().playEffect(i.getLocation(), Effect.MOBSPAWNER_FLAMES, 5);
-		i.getWorld().playEffect(i.getLocation(), Effect.SMOKE, 4);
+		i.getWorld().playEffect(loc, Effect.MOBSPAWNER_FLAMES, 5);
+		explosionEffect(i.getLocation(), 0, 0, 0);
+		for (int c = 0; c < 2; c++) {
+			explosionEffect(i.getLocation(), Math.random() * 2 - 1, Math.random(), Math.random() * 2 - 1);
+		}
+	}
+	
+	private void explosionEffect(Location loc, double x, double y, double z) {
+		loc.getWorld().createExplosion(loc.getX() + x, loc.getY() + y, loc.getZ() + z, 0, false, false);
 	}
 	
 	@Override
