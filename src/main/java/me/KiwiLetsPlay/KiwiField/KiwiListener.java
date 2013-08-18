@@ -18,7 +18,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -34,21 +33,37 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class KiwiListener implements Listener {
 	
-	private static HashMap<String, Boolean> headshot = new HashMap<String, Boolean>();
+	private HashMap<String, Boolean> headshot;
+	private HashMap<String, Long> spawnProtection;
+	private StatsUtil statsUtil;
 	
 	public KiwiListener() {
 		headshot = new HashMap<String, Boolean>();
+		spawnProtection = new HashMap<String, Long>();
 		
-		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new TickListener(), 1, 1);
+		statsUtil = new StatsUtil(Bukkit.getOnlinePlayers());
+		// TEMP
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			statsUtil.setChatColor(p, ChatColor.GREEN);
+		}
+		
+		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new TickListener(this), 1, 1);
 		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new SnowballRemover(), 20, 20);
+	}
+	
+	public StatsUtil getStatsUtil() {
+		return statsUtil;
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -64,6 +79,8 @@ public class KiwiListener implements Listener {
 			Weapon w = getWeaponFromItemStack(player.getItemInHand());
 			if (w == null) return;
 			
+			setSpawnProtected(player, false);
+			
 			if (w instanceof Shotgun) {
 				Shotgun g = (Shotgun) w;
 				
@@ -73,6 +90,7 @@ public class KiwiListener implements Listener {
 						ProjectileUtil.launchBullet(player, g);
 					}
 					ProjectileUtil.setWeaponCooldown(player, g, true);
+					statsUtil.registerWeaponUsed(player, w, g.getPelletCount());
 					w.playFiringSound(player);
 				}
 				
@@ -86,6 +104,7 @@ public class KiwiListener implements Listener {
 						if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
 						ProjectileUtil.launchBullet(player, g);
 						ProjectileUtil.setWeaponCooldown(player, g, true);
+						statsUtil.registerWeaponUsed(player, w);
 						w.playFiringSound(player);
 					}
 					
@@ -97,7 +116,11 @@ public class KiwiListener implements Listener {
 				Grenade g = (Grenade) w;
 				Item i = ProjectileUtil.launchGrenade(player, g);
 				ProjectileUtil.setWeaponCooldown(player, g, true);
-				Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), new GrenadeExploder(g, i), g.getFuseLenght());
+				statsUtil.registerWeaponUsed(player, w);
+				g.playFiringSound(player);
+				
+				GrenadeExploder ge = new GrenadeExploder(g, i, statsUtil);
+				Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), ge, g.getFuseLenght());
 			}
 		}
 	}
@@ -131,40 +154,49 @@ public class KiwiListener implements Listener {
 				Projectile proj = (Projectile) projectileHit.getDamager();
 				Player shooter = (Player) proj.getShooter();
 				Player corpse = event.getEntity();
+				String weaponname = proj.getMetadata("weaponname").get(0).asString();
+				boolean hs = headshot.containsKey(corpse.getName()) && headshot.get(corpse.getName()).booleanValue();
+				
 				sb.append(ChatColor.GREEN).append(shooter.getName()).append(ChatColor.WHITE);
-				sb.append(" [");
-				sb.append(proj.getMetadata("weaponname").get(0).asString());
-				sb.append("] ");
-				if (headshot.containsKey(corpse.getName()) && headshot.get(corpse.getName()).booleanValue()) {
-					sb.append(ChatColor.GOLD).append("<+> ");
-				}
+				sb.append(" [").append(weaponname).append("] ");
+				if (hs) sb.append(ChatColor.GOLD).append("<+> ");
 				sb.append(ChatColor.RED).append(corpse.getName());
+				
+				statsUtil.registerPlayerKilled(shooter, corpse, weaponname, hs);
 			} else if (projectileHit.getDamager().getType() == EntityType.DROPPED_ITEM) {
 				Item item = (Item) projectileHit.getDamager();
 				Player shooter = (Player) item.getMetadata("shooter").get(0).value();
 				Player corpse = event.getEntity();
+				String weaponname = item.getMetadata("weaponname").get(0).asString();
+				
 				sb.append(ChatColor.GREEN).append(shooter.getName()).append(ChatColor.WHITE);
-				sb.append(" [");
-				sb.append(item.getMetadata("weaponname").get(0).asString());
-				sb.append("] ");
+				sb.append(" [").append(weaponname).append("] ");
 				sb.append(ChatColor.RED).append(corpse.getName());
+				
+				statsUtil.registerPlayerKilled(shooter, corpse, weaponname, false);
 			}
 			break;
 		case ENTITY_ATTACK:
 			// TODO: Filter out punching with weapons.
 			EntityDamageByEntityEvent entityDamage = (EntityDamageByEntityEvent) lastDmg;
-			Entity damager = entityDamage.getDamager();
-			if (damager == null || damager.getType() != EntityType.PLAYER) {
+			if (entityDamage.getDamager() == null || entityDamage.getDamager().getType() != EntityType.PLAYER) {
 				// Death caused by a vanilla mob, don't alter
 				return;
 			}
-			sb.append(ChatColor.GREEN).append(((Player) damager).getName());
+			Player damager = (Player) entityDamage.getDamager();
+			Player victim = event.getEntity();
+			
+			sb.append(ChatColor.GREEN).append(damager.getName());
 			sb.append(ChatColor.WHITE).append(" [KNIFE] ");
-			sb.append(ChatColor.RED).append(event.getEntity().getName());
+			sb.append(ChatColor.RED).append(victim.getName());
+			
+			statsUtil.registerPlayerKilled(damager, victim, "Knife", false);
 			break;
 		default:
 			sb.append(ChatColor.RED).append(event.getEntity().getName());
 			sb.append(ChatColor.WHITE).append(" killed himself.");
+			
+			statsUtil.registerPlayerKilled(event.getEntity(), event.getEntity(), "Stupidity", false);
 			break;
 		}
 		
@@ -174,7 +206,9 @@ public class KiwiListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
-		player.setNoDamageTicks(50);
+		
+		setSpawnProtected(player, true);
+		
 		player.closeInventory();
 		player.getInventory().clear();
 		
@@ -207,6 +241,11 @@ public class KiwiListener implements Listener {
 		
 		if (event.getEntityType() == EntityType.PLAYER) {
 			Player player = (Player) event.getEntity();
+			
+			if (isSpawnProtected(player)) {
+				event.setCancelled(true);
+				return;
+			}
 			
 			boolean hs = proj.getLocation().getY() - event.getEntity().getLocation().getY() > 1.35;
 			headshot.put(player.getName(), hs);
@@ -241,6 +280,12 @@ public class KiwiListener implements Listener {
 		Location from = event.getFrom();
 		Location to = event.getTo();
 		
+		if (from.getBlockX() != to.getBlockX() 
+				|| from.getBlockY() != to.getBlockY()
+				|| from.getBlockZ() != to.getBlockZ()) {
+			setSpawnProtected(p, false);
+		}
+		
 		if (from.getX() != to.getX() || from.getZ() != to.getZ()) {
 			ProjectileUtil.setMoving(p, true);
 		} else {
@@ -256,6 +301,13 @@ public class KiwiListener implements Listener {
 		}
 	}
 	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		statsUtil.addPlayer(event.getPlayer());
+		// TEMP
+		statsUtil.setChatColor(event.getPlayer(), ChatColor.GREEN);
+	}
+	
 	private Weapon getWeaponFromItemStack(ItemStack i) {
 		// TODO: Implement weapons.
 		if (i.getType() == Material.FLINT) return new DesertEagle();
@@ -263,9 +315,34 @@ public class KiwiListener implements Listener {
 		if (i.getType() == Material.GLOWSTONE_DUST) return new Nova();
 		return new MP7();
 	}
+	
+	private boolean isSpawnProtected(Player player) {
+		Long val = spawnProtection.get(player.getName());
+		if (val == null) {
+			return false;
+		} else {
+			return val > System.currentTimeMillis();
+		}
+	}
+	
+	private void setSpawnProtected(Player player, boolean value) {
+		if (value) {
+			spawnProtection.put(player.getName(), System.currentTimeMillis() + 20000);
+			Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), new InvisibilityAdder(player), 1);
+		} else {
+			spawnProtection.remove(player.getName());
+			player.removePotionEffect(PotionEffectType.INVISIBILITY);
+		}
+	}
 }
 
 class TickListener implements Runnable {
+	
+	KiwiListener kl;
+	
+	public TickListener(KiwiListener kiwiListener) {
+		kl = kiwiListener;
+	}
 	
 	@Override
 	public void run() {
@@ -282,6 +359,8 @@ class TickListener implements Runnable {
 				ProjectileUtil.setWeaponCooldown(p, g, true);
 				g.playFiringSound(p);
 			}
+			
+			kl.getStatsUtil().registerWeaponUsed(p, w);
 		}
 	}
 	
@@ -310,15 +389,31 @@ class GrenadeExploder implements Runnable {
 	
 	Grenade g;
 	Item i;
+	StatsUtil su;
 	
-	GrenadeExploder(Grenade grenade, Item item) {
+	GrenadeExploder(Grenade grenade, Item item, StatsUtil statsUtil) {
 		g = grenade;
 		i = item;
+		su = statsUtil;
 	}
 	
 	@Override
 	public void run() {
-		g.explode(i);
+		g.explode(i, su);
 		i.remove();
+	}
+}
+
+class InvisibilityAdder implements Runnable {
+	
+	Player p;
+	
+	InvisibilityAdder(Player player) {
+		p = player;
+	}
+	
+	@Override
+	public void run() {
+		p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 400, 1));
 	}
 }

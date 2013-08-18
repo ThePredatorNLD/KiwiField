@@ -2,6 +2,8 @@ package me.KiwiLetsPlay.KiwiField.weapon.grenade;
 
 import java.util.List;
 
+import me.KiwiLetsPlay.KiwiField.StatsUtil;
+
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -46,7 +48,7 @@ public class HighExplosiveGrenade implements Grenade {
 	}
 	
 	@Override
-	public void explode(Item i) {
+	public void explode(Item i, StatsUtil su) {
 		if (!(i.hasMetadata("shooter"))) return;
 		Player shooter = (Player) i.getMetadata("shooter").get(0).value();
 		Location loc = i.getLocation();
@@ -70,6 +72,8 @@ public class HighExplosiveGrenade implements Grenade {
 				if (p.getInventory().getChestplate() != null) {
 					dmg *= 0.9;
 				}
+				
+				su.registerWeaponHit(shooter, p, getName(), dmg, false);
 			}
 			
 			le.setNoDamageTicks(0);
