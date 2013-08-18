@@ -378,7 +378,7 @@ class SnowballRemover implements Runnable {
 	public void run() {
 		World w = Bukkit.getWorlds().get(0);
 		for (Snowball sb : w.getEntitiesByClass(Snowball.class)) {
-			if (sb.getTicksLived() > 80) {
+			if (sb.getTicksLived() > 60) {
 				sb.remove();
 			}
 		}
