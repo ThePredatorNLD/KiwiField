@@ -53,7 +53,7 @@ public class Nova implements Shotgun {
 	}
 	
 	@Override
-	public double getPelletCount() {
+	public int getPelletCount() {
 		return 8;
 	}
 	
