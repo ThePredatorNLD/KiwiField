@@ -5,6 +5,7 @@ import java.util.HashMap;
 import me.KiwiLetsPlay.KiwiField.weapon.Weapon;
 import me.KiwiLetsPlay.KiwiField.weapon.grenade.Grenade;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
+import me.KiwiLetsPlay.KiwiField.weapon.melee.MeleeWeapon;
 
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -123,6 +124,18 @@ public final class ProjectileUtil {
 				weaponFiring.put(player.getName(), System.currentTimeMillis() + rightClickAutomatic);
 			} else {
 				weaponFiring.put(player.getName(), System.currentTimeMillis() + rightClickSemi);
+			}
+		} else {
+			weaponFiring.remove(player.getName());
+		}
+	}
+	
+	public static void setUsingKnife(Player player, MeleeWeapon m, boolean secondary, boolean value) {
+		if (value) {
+			if (secondary ) {
+				weaponFiring.put(player.getName(), System.currentTimeMillis() + m.getSecondaryCooldown());
+			} else {
+				weaponFiring.put(player.getName(), System.currentTimeMillis() + m.getFiringCooldown());
 			}
 		} else {
 			weaponFiring.remove(player.getName());

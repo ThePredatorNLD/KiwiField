@@ -47,7 +47,7 @@ public class Knife implements MeleeWeapon {
 	}
 	
 	@Override
-	public double getSecondaryCooldown() {
+	public int getSecondaryCooldown() {
 		return 1500;
 	}
 	

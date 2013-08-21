@@ -11,7 +11,7 @@ public interface MeleeWeapon extends Weapon {
 	
 	public double getSecondaryBackstabDamage();
 	
-	public double getSecondaryCooldown();
+	public int getSecondaryCooldown();
 	
 	public double getAttackRange();
 	
