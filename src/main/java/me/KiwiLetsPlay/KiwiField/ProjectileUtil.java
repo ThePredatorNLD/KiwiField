@@ -73,7 +73,7 @@ public final class ProjectileUtil {
 		
 		Vector dir = player.getLocation().getDirection();
 		dir.setY(dir.getY() + 0.06);
-		dir = dir.multiply(1.1);
+		dir = dir.multiply(1.4);
 		
 		Item i = player.getWorld().dropItem(spawn, player.getItemInHand());
 		player.getInventory().clear(player.getInventory().getHeldItemSlot());
