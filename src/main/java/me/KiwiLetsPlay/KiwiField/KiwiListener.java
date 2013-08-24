@@ -82,7 +82,7 @@ public class KiwiListener implements Listener {
 			return;
 		}
 		
-		Weapon w = getWeaponFromItemStack(player.getItemInHand());
+		Weapon w = Weapons.getWeaponByItemStack(player.getItemInHand());
 		if (!(w instanceof MeleeWeapon)) {
 			event.setCancelled(true);
 			PlayerInteractEvent pie = new PlayerInteractEvent(player, Action.RIGHT_CLICK_AIR, player.getItemInHand(), null, null);
@@ -112,7 +112,7 @@ public class KiwiListener implements Listener {
 			if (player.getGameMode() == GameMode.ADVENTURE) {
 				event.setCancelled(true);
 			}
-			Weapon w = getWeaponFromItemStack(player.getItemInHand());
+			Weapon w = Weapons.getWeaponByItemStack(player.getItemInHand());
 			if (w instanceof MeleeWeapon) {
 				if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
 				
@@ -124,7 +124,7 @@ public class KiwiListener implements Listener {
 			Player player = event.getPlayer();
 			if (player.getItemInHand() == null) return;
 			
-			Weapon w = getWeaponFromItemStack(player.getItemInHand());
+			Weapon w = Weapons.getWeaponByItemStack(player.getItemInHand());
 			if (w == null) return;
 			
 			setSpawnProtected(player, false);
@@ -402,15 +402,6 @@ public class KiwiListener implements Listener {
 		statsUtil.setChatColor(event.getPlayer(), ChatColor.GREEN);
 	}
 	
-	private Weapon getWeaponFromItemStack(ItemStack i) {
-		// TODO: Implement weapons.
-		if (i.getType() == Material.FLINT) return new DesertEagle();
-		if (i.getType() == Material.CLAY_BALL) return new HighExplosiveGrenade();
-		if (i.getType() == Material.GLOWSTONE_DUST) return new Nova();
-		if (i.getType() == Material.COAL) return new Knife();
-		return new MP7();
-	}
-	
 	public void setSpawnProtected(Player player, boolean value) {
 		if (value) {
 			spawnProtection.put(player.getName(), System.currentTimeMillis() + 20000);
@@ -443,7 +434,7 @@ class TickListener implements Runnable {
 	public void run() {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (p.isDead()) continue;
-			Weapon w = getWeaponFromItemStack(p.getItemInHand());
+			Weapon w = Weapons.getWeaponByItemStack(p.getItemInHand());
 			if (w == null) continue;
 			if (!(w instanceof Gun)) continue;
 			Gun g = (Gun) w;
@@ -457,15 +448,6 @@ class TickListener implements Runnable {
 			
 			kl.getStatsUtil().registerWeaponUsed(p, w);
 		}
-	}
-	
-	private Weapon getWeaponFromItemStack(ItemStack i) {
-		// TODO: Implement weapons.
-		if (i.getType() == Material.FLINT) return new DesertEagle();
-		if (i.getType() == Material.GLOWSTONE_DUST) return new Nova();
-		if (i.getType() == Material.SLIME_BALL) return new MP7();
-		if (i.getType() == Material.COAL) return new Knife();
-		return null;
 	}
 }
 
