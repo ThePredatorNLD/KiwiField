@@ -43,6 +43,11 @@ public class Nova implements Shotgun {
 	}
 	
 	@Override
+	public int getBackupAmmoCapacity() {
+		return 32;
+	}
+	
+	@Override
 	public double getBaseRecoil() {
 		return 10;
 	}

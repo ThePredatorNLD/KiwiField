@@ -45,6 +45,11 @@ public class MP7 implements Gun {
 	}
 	
 	@Override
+	public int getBackupAmmoCapacity() {
+		return 120;
+	}
+	
+	@Override
 	public double getBaseRecoil() {
 		return 6;
 	}

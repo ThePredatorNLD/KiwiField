@@ -46,6 +46,11 @@ public class DesertEagle implements Gun {
 	}
 	
 	@Override
+	public int getBackupAmmoCapacity() {
+		return 35;
+	}
+	
+	@Override
 	public double getBaseRecoil() {
 		return 9;
 	}
