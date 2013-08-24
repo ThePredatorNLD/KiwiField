@@ -2,11 +2,12 @@ package me.KiwiLetsPlay.KiwiField.weapon.grenade;
 
 import java.util.List;
 
-import me.KiwiLetsPlay.KiwiField.StatsUtil;
+import me.KiwiLetsPlay.KiwiField.KiwiListener;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -44,11 +45,11 @@ public class HighExplosiveGrenade implements Grenade {
 	
 	@Override
 	public void playFiringSound(Player p) {
-		// TODO
+		p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1f, 1f);
 	}
 	
 	@Override
-	public void explode(Item i, StatsUtil su) {
+	public void explode(Item i, KiwiListener kl) {
 		if (!(i.hasMetadata("shooter"))) return;
 		Player shooter = (Player) i.getMetadata("shooter").get(0).value();
 		Location loc = i.getLocation();
@@ -66,6 +67,9 @@ public class HighExplosiveGrenade implements Grenade {
 			
 			if (le instanceof Player) {
 				Player p = (Player) le;
+				
+				if (kl.isSpawnProtected(p)) continue;
+				
 				if (p.getInventory().getHelmet() != null) {
 					dmg *= 0.9;
 				}
@@ -73,7 +77,7 @@ public class HighExplosiveGrenade implements Grenade {
 					dmg *= 0.9;
 				}
 				
-				su.registerWeaponHit(shooter, p, getName(), dmg, false);
+				kl.getStatsUtil().registerWeaponHit(shooter, p, getName(), dmg, false);
 			}
 			
 			le.setNoDamageTicks(0);
@@ -101,6 +105,6 @@ public class HighExplosiveGrenade implements Grenade {
 	
 	@Override
 	public long getFuseLenght() {
-		return 55;
+		return 65;
 	}
 }

@@ -1,6 +1,7 @@
 package me.KiwiLetsPlay.KiwiField.weapon.melee;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,7 +34,7 @@ public class Knife implements MeleeWeapon {
 	
 	@Override
 	public int getFiringCooldown() {
-		return 500;
+		return 750;
 	}
 	
 	@Override
@@ -53,8 +54,7 @@ public class Knife implements MeleeWeapon {
 	
 	@Override
 	public void playFiringSound(Player p) {
-		// TODO Auto-generated method stub
-		
+		p.playSound(p.getLocation(), Sound.ANVIL_LAND, 0.2f, 1f);
 	}
 	
 	@Override

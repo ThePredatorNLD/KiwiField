@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import me.KiwiLetsPlay.KiwiField.KiwiField;
 import me.KiwiLetsPlay.KiwiField.weapon.Weapon;
+import me.KiwiLetsPlay.KiwiField.weapon.Weapons;
 import me.KiwiLetsPlay.KiwiField.weapon.grenade.Grenade;
 import me.KiwiLetsPlay.KiwiField.weapon.grenade.HighExplosiveGrenade;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
@@ -11,9 +12,12 @@ import me.KiwiLetsPlay.KiwiField.weapon.gun.pistol.DesertEagle;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.smg.MP7;
 import me.KiwiLetsPlay.KiwiField.weapon.heavy.Nova;
 import me.KiwiLetsPlay.KiwiField.weapon.heavy.Shotgun;
+import me.KiwiLetsPlay.KiwiField.weapon.melee.Knife;
+import me.KiwiLetsPlay.KiwiField.weapon.melee.MeleeWeapon;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,7 +35,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -67,10 +73,52 @@ public class KiwiListener implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerRightClick(PlayerInteractEvent event) {
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+		if (!(event.getRightClicked() instanceof LivingEntity)) return;
+		Player player = event.getPlayer();
+		LivingEntity entity = (LivingEntity) event.getRightClicked();
+		if (entity.isDead()) {
+			event.setCancelled(true);
+			return;
+		}
+		
+		Weapon w = getWeaponFromItemStack(player.getItemInHand());
+		if (!(w instanceof MeleeWeapon)) {
+			event.setCancelled(true);
+			PlayerInteractEvent pie = new PlayerInteractEvent(player, Action.RIGHT_CLICK_AIR, player.getItemInHand(), null, null);
+			Bukkit.getPluginManager().callEvent(pie);
+			return;
+		}
+		
+		if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
+		
+		EntityDamageByEntityEvent e = new EntityDamageByEntityEvent(player, entity, DamageCause.ENTITY_ATTACK, -1d);
+		Bukkit.getPluginManager().callEvent(e);
+		
+		ProjectileUtil.setUsingKnife(player, (MeleeWeapon) w, false, true);
+		w.playFiringSound(player);
+		statsUtil.registerWeaponUsed(player, w);
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		if (event.getPlayer().isDead()) {
+			event.setCancelled(true);
+			return;
+		}
+		
 		if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-			if (event.getPlayer().getGameMode() == GameMode.ADVENTURE) {
+			Player player = event.getPlayer();
+			if (player.getGameMode() == GameMode.ADVENTURE) {
 				event.setCancelled(true);
+			}
+			Weapon w = getWeaponFromItemStack(player.getItemInHand());
+			if (w instanceof MeleeWeapon) {
+				if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
+				
+				ProjectileUtil.setUsingKnife(player, (MeleeWeapon) w, true, true);
+				statsUtil.registerWeaponUsed(player, w);
+				w.playFiringSound(player);
 			}
 		} else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Player player = event.getPlayer();
@@ -119,8 +167,14 @@ public class KiwiListener implements Listener {
 				statsUtil.registerWeaponUsed(player, w);
 				g.playFiringSound(player);
 				
-				GrenadeExploder ge = new GrenadeExploder(g, i, statsUtil);
+				GrenadeExploder ge = new GrenadeExploder(g, i, this);
 				Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), ge, g.getFuseLenght());
+			} else if (w instanceof MeleeWeapon) {
+				if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
+				
+				ProjectileUtil.setUsingKnife(player, (MeleeWeapon) w, false, true);
+				statsUtil.registerWeaponUsed(player, w);
+				w.playFiringSound(player);
 			}
 		}
 	}
@@ -215,7 +269,7 @@ public class KiwiListener implements Listener {
 		// Subject to change
 		player.getInventory().setItem(0, new MP7().getItemStack());
 		player.getInventory().setItem(1, new DesertEagle().getItemStack());
-		player.getInventory().setItem(2, null); // TODO: Knife
+		player.getInventory().setItem(2, new Knife().getItemStack());
 		player.getInventory().setItem(3, new HighExplosiveGrenade().getItemStack());
 		player.getInventory().setItem(4, new Nova().getItemStack());
 		
@@ -226,52 +280,93 @@ public class KiwiListener implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onSnowballHit(EntityDamageByEntityEvent event) {
-		if (event.getDamager().getType() != EntityType.SNOWBALL) return;
-		if (!(event.getEntity() instanceof LivingEntity)) {
-			event.setCancelled(true);
-			return;
-		}
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+		// Cancel unless actually a valid attack
+		event.setCancelled(true);
 		
-		LivingEntity entity = (LivingEntity) event.getEntity();
-		Projectile proj = (Projectile) event.getDamager();
-		
-		double damage = proj.getMetadata("damage").get(0).asDouble();
-		boolean piercing = proj.getMetadata("piercing").get(0).asBoolean();
-		
-		if (event.getEntityType() == EntityType.PLAYER) {
-			Player player = (Player) event.getEntity();
+		if (event.getCause() == DamageCause.ENTITY_ATTACK && event.getDamager().getType() == EntityType.PLAYER) {
+			if (!(event.getEntity() instanceof LivingEntity)) return;
 			
-			if (isSpawnProtected(player)) {
-				event.setCancelled(true);
-				return;
+			Player damager = (Player) event.getDamager();
+			LivingEntity entity = (LivingEntity) event.getEntity();
+			Weapon w = Weapons.getWeaponByItemStack(damager.getItemInHand());
+			
+			if (w == null || !(w instanceof MeleeWeapon)) return;
+			MeleeWeapon m = (MeleeWeapon) w;
+			
+			double damage;
+			float diff = Math.abs(damager.getLocation().getYaw() - entity.getLocation().getYaw());
+			if (diff > 180) diff -= 360;
+			
+			if (event.getDamage() == -1) {
+				if (Math.abs(diff) < 60) {
+					damage = m.getBackstabDamage();
+					entity.getWorld().playEffect(entity.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
+				} else {
+					damage = m.getDamage();
+				}
+			} else {
+				if (entity instanceof Player && isSpawnProtected((Player) entity)) return;
+				if (!(ProjectileUtil.isWeaponCooledDown(damager))) return;
+				
+				if (Math.abs(diff) < 60) {
+					damage = m.getSecondaryBackstabDamage();
+					entity.getWorld().playEffect(entity.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
+				} else {
+					damage = m.getSecondaryDamage();
+				}
+				ProjectileUtil.setUsingKnife(damager, m, true, true);
+				statsUtil.registerWeaponUsed(damager, w);
+				w.playFiringSound(damager);
 			}
 			
-			boolean hs = proj.getLocation().getY() - event.getEntity().getLocation().getY() > 1.35;
-			headshot.put(player.getName(), hs);
-			if (hs) damage *= 4;
-			PlayerInventory i = player.getInventory();
-			if ((hs && i.getHelmet() != null) || (!hs && i.getChestplate() != null)) {
-				if (piercing) {
-					damage *= 0.75;
-				} else {
-					damage *= 0.5;
+			// Make sure that the player will take damage
+			entity.setNoDamageTicks(0);
+			if (entity.getHealth() <= damage) {
+				entity.setLastDamageCause(event);
+			}
+			entity.damage(damage);
+		} else if (event.getCause() == DamageCause.PROJECTILE && event.getDamager().getType() == EntityType.SNOWBALL) {
+			if (!(event.getEntity() instanceof LivingEntity)) return;
+			
+			LivingEntity entity = (LivingEntity) event.getEntity();
+			Projectile proj = (Projectile) event.getDamager();
+			
+			double damage = proj.getMetadata("damage").get(0).asDouble();
+			boolean piercing = proj.getMetadata("piercing").get(0).asBoolean();
+			
+			if (event.getEntityType() == EntityType.PLAYER) {
+				Player player = (Player) event.getEntity();
+				
+				if (isSpawnProtected(player)) {
+					event.setCancelled(true);
+					return;
+				}
+				
+				boolean hs = proj.getLocation().getY() - event.getEntity().getLocation().getY() > 1.35;
+				headshot.put(player.getName(), hs);
+				if (hs) damage *= 4;
+				PlayerInventory i = player.getInventory();
+				if ((hs && i.getHelmet() != null) || (!hs && i.getChestplate() != null)) {
+					if (piercing) {
+						damage *= 0.75;
+					} else {
+						damage *= 0.5;
+					}
 				}
 			}
-		}
-		
-		// Make sure that the player will take damage
-		entity.setNoDamageTicks(0);
-		if (entity.getHealth() <= damage) {
-			if (entity != proj.getShooter()) {
-				entity.damage(0, proj.getShooter());
-				entity.setNoDamageTicks(0);
+			
+			// Make sure that the player will take damage
+			entity.setNoDamageTicks(0);
+			if (entity.getHealth() <= damage) {
+				if (entity != proj.getShooter()) {
+					entity.damage(0, proj.getShooter());
+					entity.setNoDamageTicks(0);
+				}
+				entity.setLastDamageCause(event);
 			}
-			entity.setLastDamageCause(event);
+			entity.damage(damage);
 		}
-		entity.damage(damage);
-		
-		event.setCancelled(true);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -280,8 +375,7 @@ public class KiwiListener implements Listener {
 		Location from = event.getFrom();
 		Location to = event.getTo();
 		
-		if (from.getBlockX() != to.getBlockX() 
-				|| from.getBlockY() != to.getBlockY()
+		if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY()
 				|| from.getBlockZ() != to.getBlockZ()) {
 			setSpawnProtected(p, false);
 		}
@@ -313,25 +407,26 @@ public class KiwiListener implements Listener {
 		if (i.getType() == Material.FLINT) return new DesertEagle();
 		if (i.getType() == Material.CLAY_BALL) return new HighExplosiveGrenade();
 		if (i.getType() == Material.GLOWSTONE_DUST) return new Nova();
+		if (i.getType() == Material.COAL) return new Knife();
 		return new MP7();
 	}
 	
-	private boolean isSpawnProtected(Player player) {
-		Long val = spawnProtection.get(player.getName());
-		if (val == null) {
-			return false;
-		} else {
-			return val > System.currentTimeMillis();
-		}
-	}
-	
-	private void setSpawnProtected(Player player, boolean value) {
+	public void setSpawnProtected(Player player, boolean value) {
 		if (value) {
 			spawnProtection.put(player.getName(), System.currentTimeMillis() + 20000);
 			Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), new InvisibilityAdder(player), 1);
 		} else {
 			spawnProtection.remove(player.getName());
 			player.removePotionEffect(PotionEffectType.INVISIBILITY);
+		}
+	}
+	
+	public boolean isSpawnProtected(Player player) {
+		Long val = spawnProtection.get(player.getName());
+		if (val == null) {
+			return false;
+		} else {
+			return val > System.currentTimeMillis();
 		}
 	}
 }
@@ -368,7 +463,9 @@ class TickListener implements Runnable {
 		// TODO: Implement weapons.
 		if (i.getType() == Material.FLINT) return new DesertEagle();
 		if (i.getType() == Material.GLOWSTONE_DUST) return new Nova();
-		return new MP7();
+		if (i.getType() == Material.SLIME_BALL) return new MP7();
+		if (i.getType() == Material.COAL) return new Knife();
+		return null;
 	}
 }
 
@@ -389,17 +486,17 @@ class GrenadeExploder implements Runnable {
 	
 	Grenade g;
 	Item i;
-	StatsUtil su;
+	KiwiListener kl;
 	
-	GrenadeExploder(Grenade grenade, Item item, StatsUtil statsUtil) {
+	GrenadeExploder(Grenade grenade, Item item, KiwiListener kiwiListener) {
 		g = grenade;
 		i = item;
-		su = statsUtil;
+		kl = kiwiListener;
 	}
 	
 	@Override
 	public void run() {
-		g.explode(i, su);
+		g.explode(i, kl);
 		i.remove();
 	}
 }

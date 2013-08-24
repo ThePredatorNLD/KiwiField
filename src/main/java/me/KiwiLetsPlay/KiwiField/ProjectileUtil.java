@@ -132,13 +132,13 @@ public final class ProjectileUtil {
 	
 	public static void setUsingKnife(Player player, MeleeWeapon m, boolean secondary, boolean value) {
 		if (value) {
-			if (secondary ) {
-				weaponFiring.put(player.getName(), System.currentTimeMillis() + m.getSecondaryCooldown());
+			if (secondary) {
+				weaponCooldown.put(player.getName(), System.currentTimeMillis() + m.getSecondaryCooldown());
 			} else {
-				weaponFiring.put(player.getName(), System.currentTimeMillis() + m.getFiringCooldown());
+				weaponCooldown.put(player.getName(), System.currentTimeMillis() + m.getFiringCooldown());
 			}
 		} else {
-			weaponFiring.remove(player.getName());
+			weaponCooldown.remove(player.getName());
 		}
 	}
 	
