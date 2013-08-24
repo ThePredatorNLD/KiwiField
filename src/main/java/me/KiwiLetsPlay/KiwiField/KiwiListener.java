@@ -8,10 +8,10 @@ import me.KiwiLetsPlay.KiwiField.weapon.Weapons;
 import me.KiwiLetsPlay.KiwiField.weapon.grenade.Grenade;
 import me.KiwiLetsPlay.KiwiField.weapon.grenade.HighExplosiveGrenade;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
+import me.KiwiLetsPlay.KiwiField.weapon.gun.heavy.Nova;
+import me.KiwiLetsPlay.KiwiField.weapon.gun.heavy.Shotgun;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.pistol.DesertEagle;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.smg.MP7;
-import me.KiwiLetsPlay.KiwiField.weapon.heavy.Nova;
-import me.KiwiLetsPlay.KiwiField.weapon.heavy.Shotgun;
 import me.KiwiLetsPlay.KiwiField.weapon.melee.Knife;
 import me.KiwiLetsPlay.KiwiField.weapon.melee.MeleeWeapon;
 

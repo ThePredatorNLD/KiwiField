@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import me.KiwiLetsPlay.KiwiField.weapon.grenade.*;
+import me.KiwiLetsPlay.KiwiField.weapon.gun.heavy.*;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.pistol.*;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.smg.*;
-import me.KiwiLetsPlay.KiwiField.weapon.heavy.*;
 import me.KiwiLetsPlay.KiwiField.weapon.melee.*;
 
 import org.bukkit.inventory.ItemStack;

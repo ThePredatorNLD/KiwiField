@@ -1,4 +1,4 @@
-package me.KiwiLetsPlay.KiwiField.weapon.heavy;
+package me.KiwiLetsPlay.KiwiField.weapon.gun.heavy;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
