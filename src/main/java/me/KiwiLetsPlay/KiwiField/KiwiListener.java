@@ -5,6 +5,7 @@ import java.util.HashMap;
 import me.KiwiLetsPlay.KiwiField.KiwiField;
 import me.KiwiLetsPlay.KiwiField.weapon.Weapon;
 import me.KiwiLetsPlay.KiwiField.weapon.Weapons;
+import me.KiwiLetsPlay.KiwiField.weapon.grenade.SmokeGrenade;
 import me.KiwiLetsPlay.KiwiField.weapon.grenade.Grenade;
 import me.KiwiLetsPlay.KiwiField.weapon.grenade.HighExplosiveGrenade;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
@@ -272,6 +273,7 @@ public class KiwiListener implements Listener {
 		player.getInventory().setItem(2, new Knife().getItemStack());
 		player.getInventory().setItem(3, new HighExplosiveGrenade().getItemStack());
 		player.getInventory().setItem(4, new Nova().getItemStack());
+		player.getInventory().setItem(5, new SmokeGrenade().getItemStack());
 		
 		player.getInventory().setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE, 1));
 		player.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));

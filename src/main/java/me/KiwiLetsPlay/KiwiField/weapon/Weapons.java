@@ -32,6 +32,7 @@ public abstract class Weapons {
 	
 	// Grenades
 	public static final HighExplosiveGrenade HIGH_EXPLOSIVE_GRENADE = new HighExplosiveGrenade();
+	public static final SmokeGrenade SMOKE_GRENADE = new SmokeGrenade();
 	
 	// Melee
 	public static final Knife KNIFE = new Knife();
@@ -52,6 +53,7 @@ public abstract class Weapons {
 		
 		// Grenades
 		addWeapon(HIGH_EXPLOSIVE_GRENADE);
+		addWeapon(SMOKE_GRENADE);
 		
 		// Melee
 		addWeapon(KNIFE);
