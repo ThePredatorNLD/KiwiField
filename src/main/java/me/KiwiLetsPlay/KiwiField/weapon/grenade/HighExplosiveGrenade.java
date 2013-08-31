@@ -105,6 +105,6 @@ public class HighExplosiveGrenade implements Grenade {
 	
 	@Override
 	public long getFuseLenght() {
-		return 65;
+		return 40;
 	}
 }
