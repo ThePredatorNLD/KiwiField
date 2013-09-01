@@ -101,4 +101,9 @@ public class Nova implements Shotgun, SingleLoader {
 	public boolean isArmorPiercing() {
 		return true;
 	}
+	
+	@Override
+	public int getPrice() {
+		return 1200;
+	}
 }

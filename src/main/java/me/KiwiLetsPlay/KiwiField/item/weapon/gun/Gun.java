@@ -1,8 +1,9 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon.gun;
 
+import me.KiwiLetsPlay.KiwiField.item.Buyable;
 import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
 
-public interface Gun extends Weapon {
+public interface Gun extends Weapon, Buyable {
 	
 	public int getAmmoCapacity();
 	

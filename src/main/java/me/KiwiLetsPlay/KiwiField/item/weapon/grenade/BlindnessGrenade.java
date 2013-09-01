@@ -79,4 +79,9 @@ public class BlindnessGrenade implements Grenade {
 	public long getFuseLenght() {
 		return 40;
 	}
+	
+	@Override
+	public int getPrice() {
+		return 200;
+	}
 }

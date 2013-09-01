@@ -86,4 +86,9 @@ public class MP7 implements Gun {
 	public boolean isArmorPiercing() {
 		return false;
 	}
+	
+	@Override
+	public int getPrice() {
+		return 1700;
+	}
 }

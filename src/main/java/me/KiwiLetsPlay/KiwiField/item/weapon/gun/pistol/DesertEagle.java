@@ -87,4 +87,9 @@ public class DesertEagle implements Gun {
 	public boolean isArmorPiercing() {
 		return true;
 	}
+	
+	@Override
+	public int getPrice() {
+		return 800;
+	}
 }
