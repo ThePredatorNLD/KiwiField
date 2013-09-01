@@ -1,4 +1,4 @@
-package me.KiwiLetsPlay.KiwiField.weapon;
+package me.KiwiLetsPlay.KiwiField.item.weapon;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

@@ -1,4 +1,4 @@
-package me.KiwiLetsPlay.KiwiField.weapon.grenade;
+package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 
 import java.util.List;
 

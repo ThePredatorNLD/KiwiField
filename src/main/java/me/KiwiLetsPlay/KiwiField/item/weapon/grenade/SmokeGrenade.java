@@ -1,8 +1,8 @@
-package me.KiwiLetsPlay.KiwiField.weapon.grenade;
+package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 
 import me.KiwiLetsPlay.KiwiField.KiwiField;
 import me.KiwiLetsPlay.KiwiField.KiwiListener;
-import me.KiwiLetsPlay.KiwiField.weapon.grenade.util.FireworkEffectPlayer;
+import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.util.FireworkEffectPlayer;
 
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;

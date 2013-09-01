@@ -1,6 +1,9 @@
-package me.KiwiLetsPlay.KiwiField.weapon.gun.smg;
+package me.KiwiLetsPlay.KiwiField.item.weapon.gun.heavy;
 
 import java.util.ArrayList;
+
+import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Ammunition;
+import me.KiwiLetsPlay.KiwiField.item.weapon.gun.SingleLoader;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -9,23 +12,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.KiwiLetsPlay.KiwiField.weapon.gun.Ammunition;
-import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
-
-public class MP7 implements Gun {
+public class Nova implements Shotgun, SingleLoader {
 	
 	@Override
 	public String getName() {
-		return "MP7";
+		return "Nova";
 	}
 	
 	@Override
 	public ItemStack getItemStack() {
-		ItemStack is = new ItemStack(Material.SLIME_BALL, 1);
+		ItemStack is = new ItemStack(Material.GLOWSTONE_DUST, 1);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(getName());
 		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "SMG");
+		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "Shotgun");
 		im.setLore(lore);
 		is.setItemMeta(im);
 		Ammunition.setItemMeta(is, getAmmoCapacity(), getBackupAmmoCapacity());
@@ -34,12 +34,27 @@ public class MP7 implements Gun {
 	
 	@Override
 	public double getDamage() {
-		return 5;
+		return 3;
 	}
 	
 	@Override
 	public int getFiringCooldown() {
-		return 90;
+		return 890;
+	}
+	
+	@Override
+	public int getReloadStartTime() {
+		return 366;
+	}
+	
+	@Override
+	public int getReloadTime() {
+		return 433;
+	}
+	
+	@Override
+	public int getReloadEndTime() {
+		return 800;
 	}
 	
 	@Override
@@ -49,32 +64,32 @@ public class MP7 implements Gun {
 	
 	@Override
 	public int getAmmoCapacity() {
-		return 30;
+		return 8;
 	}
 	
 	@Override
 	public int getBackupAmmoCapacity() {
-		return 120;
+		return 32;
 	}
 	
 	@Override
 	public double getBaseRecoil() {
-		return 6;
-	}
-	
-	@Override
-	public double getRecoilModifier() {
-		return 0.5;
-	}
-	
-	@Override
-	public double getBulletSpeed() {
 		return 10;
 	}
 	
 	@Override
-	public int getReloadTime() {
-		return 3133;
+	public double getRecoilModifier() {
+		return 0.2;
+	}
+	
+	@Override
+	public int getPelletCount() {
+		return 8;
+	}
+	
+	@Override
+	public double getBulletSpeed() {
+		return 5;
 	}
 	
 	@Override
@@ -84,6 +99,6 @@ public class MP7 implements Gun {
 	
 	@Override
 	public boolean isArmorPiercing() {
-		return false;
+		return true;
 	}
 }

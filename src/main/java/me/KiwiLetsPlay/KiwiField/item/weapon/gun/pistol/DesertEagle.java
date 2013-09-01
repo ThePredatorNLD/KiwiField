@@ -1,4 +1,4 @@
-package me.KiwiLetsPlay.KiwiField.weapon.gun.pistol;
+package me.KiwiLetsPlay.KiwiField.item.weapon.gun.pistol;
 
 import java.util.ArrayList;
 
@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.KiwiLetsPlay.KiwiField.weapon.gun.Ammunition;
-import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
+import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Ammunition;
+import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Gun;
 
 public class DesertEagle implements Gun {
 	

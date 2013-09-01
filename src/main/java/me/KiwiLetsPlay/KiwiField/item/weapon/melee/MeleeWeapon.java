@@ -1,6 +1,6 @@
-package me.KiwiLetsPlay.KiwiField.weapon.melee;
+package me.KiwiLetsPlay.KiwiField.item.weapon.melee;
 
-import me.KiwiLetsPlay.KiwiField.weapon.Weapon;
+import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
 
 
 public interface MeleeWeapon extends Weapon {

@@ -1,4 +1,4 @@
-package me.KiwiLetsPlay.KiwiField.weapon.gun;
+package me.KiwiLetsPlay.KiwiField.item.weapon.gun;
 
 public interface SingleLoader {
 	

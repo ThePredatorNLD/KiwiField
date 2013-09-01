@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
 
-import me.KiwiLetsPlay.KiwiField.weapon.Weapon;
+import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -1,6 +1,6 @@
-package me.KiwiLetsPlay.KiwiField.weapon.gun;
+package me.KiwiLetsPlay.KiwiField.item.weapon.gun;
 
-import me.KiwiLetsPlay.KiwiField.weapon.Weapon;
+import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
 
 public interface Gun extends Weapon {
 	

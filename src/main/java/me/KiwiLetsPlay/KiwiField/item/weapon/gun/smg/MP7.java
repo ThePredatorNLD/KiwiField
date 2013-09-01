@@ -1,9 +1,6 @@
-package me.KiwiLetsPlay.KiwiField.weapon.gun.heavy;
+package me.KiwiLetsPlay.KiwiField.item.weapon.gun.smg;
 
 import java.util.ArrayList;
-
-import me.KiwiLetsPlay.KiwiField.weapon.gun.Ammunition;
-import me.KiwiLetsPlay.KiwiField.weapon.gun.SingleLoader;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,20 +9,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class Nova implements Shotgun, SingleLoader {
+import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Ammunition;
+import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Gun;
+
+public class MP7 implements Gun {
 	
 	@Override
 	public String getName() {
-		return "Nova";
+		return "MP7";
 	}
 	
 	@Override
 	public ItemStack getItemStack() {
-		ItemStack is = new ItemStack(Material.GLOWSTONE_DUST, 1);
+		ItemStack is = new ItemStack(Material.SLIME_BALL, 1);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(getName());
 		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "Shotgun");
+		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "SMG");
 		im.setLore(lore);
 		is.setItemMeta(im);
 		Ammunition.setItemMeta(is, getAmmoCapacity(), getBackupAmmoCapacity());
@@ -34,27 +34,12 @@ public class Nova implements Shotgun, SingleLoader {
 	
 	@Override
 	public double getDamage() {
-		return 3;
+		return 5;
 	}
 	
 	@Override
 	public int getFiringCooldown() {
-		return 890;
-	}
-	
-	@Override
-	public int getReloadStartTime() {
-		return 366;
-	}
-	
-	@Override
-	public int getReloadTime() {
-		return 433;
-	}
-	
-	@Override
-	public int getReloadEndTime() {
-		return 800;
+		return 90;
 	}
 	
 	@Override
@@ -64,32 +49,32 @@ public class Nova implements Shotgun, SingleLoader {
 	
 	@Override
 	public int getAmmoCapacity() {
-		return 8;
+		return 30;
 	}
 	
 	@Override
 	public int getBackupAmmoCapacity() {
-		return 32;
+		return 120;
 	}
 	
 	@Override
 	public double getBaseRecoil() {
-		return 10;
+		return 6;
 	}
 	
 	@Override
 	public double getRecoilModifier() {
-		return 0.2;
-	}
-	
-	@Override
-	public int getPelletCount() {
-		return 8;
+		return 0.5;
 	}
 	
 	@Override
 	public double getBulletSpeed() {
-		return 5;
+		return 10;
+	}
+	
+	@Override
+	public int getReloadTime() {
+		return 3133;
 	}
 	
 	@Override
@@ -99,6 +84,6 @@ public class Nova implements Shotgun, SingleLoader {
 	
 	@Override
 	public boolean isArmorPiercing() {
-		return true;
+		return false;
 	}
 }

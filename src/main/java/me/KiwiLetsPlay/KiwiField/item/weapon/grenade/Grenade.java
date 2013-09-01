@@ -1,9 +1,9 @@
-package me.KiwiLetsPlay.KiwiField.weapon.grenade;
+package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 
 import org.bukkit.entity.Item;
 
 import me.KiwiLetsPlay.KiwiField.KiwiListener;
-import me.KiwiLetsPlay.KiwiField.weapon.Weapon;
+import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
 
 public interface Grenade extends Weapon {
 	

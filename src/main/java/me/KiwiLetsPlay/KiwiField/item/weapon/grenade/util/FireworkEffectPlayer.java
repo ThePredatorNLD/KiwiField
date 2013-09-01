@@ -1,4 +1,4 @@
-package me.KiwiLetsPlay.KiwiField.weapon.grenade.util;
+package me.KiwiLetsPlay.KiwiField.item.weapon.grenade.util;
 
 import java.lang.reflect.Method;
 

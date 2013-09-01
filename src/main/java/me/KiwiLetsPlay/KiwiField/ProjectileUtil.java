@@ -2,14 +2,14 @@ package me.KiwiLetsPlay.KiwiField;
 
 import java.util.HashMap;
 
-import me.KiwiLetsPlay.KiwiField.weapon.Weapon;
-import me.KiwiLetsPlay.KiwiField.weapon.Weapons;
-import me.KiwiLetsPlay.KiwiField.weapon.grenade.Grenade;
-import me.KiwiLetsPlay.KiwiField.weapon.gun.Ammunition;
-import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
-import me.KiwiLetsPlay.KiwiField.weapon.gun.SingleLoader;
-import me.KiwiLetsPlay.KiwiField.weapon.gun.heavy.Shotgun;
-import me.KiwiLetsPlay.KiwiField.weapon.melee.MeleeWeapon;
+import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
+import me.KiwiLetsPlay.KiwiField.item.weapon.Weapons;
+import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.Grenade;
+import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Ammunition;
+import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Gun;
+import me.KiwiLetsPlay.KiwiField.item.weapon.gun.SingleLoader;
+import me.KiwiLetsPlay.KiwiField.item.weapon.gun.heavy.Shotgun;
+import me.KiwiLetsPlay.KiwiField.item.weapon.melee.MeleeWeapon;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

@@ -1,4 +1,4 @@
-package me.KiwiLetsPlay.KiwiField.weapon.gun;
+package me.KiwiLetsPlay.KiwiField.item.weapon.gun;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.KiwiLetsPlay.KiwiField.weapon.Weapons;
+import me.KiwiLetsPlay.KiwiField.item.weapon.Weapons;
 
 public class Ammunition {
 	

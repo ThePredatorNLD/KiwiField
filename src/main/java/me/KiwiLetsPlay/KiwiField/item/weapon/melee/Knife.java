@@ -1,4 +1,4 @@
-package me.KiwiLetsPlay.KiwiField.weapon.melee;
+package me.KiwiLetsPlay.KiwiField.item.weapon.melee;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
