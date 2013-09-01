@@ -55,6 +55,7 @@ public final class ProjectileUtil {
 		if (!(isWeaponCooledDown(player))) return false;
 		if (!(Ammunition.fromItemStack(player.getItemInHand()).shoot())) {
 			player.playSound(player.getLocation(), Sound.CLICK, 0.5f, 1.75f);
+			setWeaponCooldown(player, g, true);
 			return false;
 		}
 		
