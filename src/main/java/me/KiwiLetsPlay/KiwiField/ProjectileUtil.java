@@ -2,8 +2,8 @@ package me.KiwiLetsPlay.KiwiField;
 
 import java.util.HashMap;
 
+import me.KiwiLetsPlay.KiwiField.item.Items;
 import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
-import me.KiwiLetsPlay.KiwiField.item.weapon.Weapons;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.Grenade;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Ammunition;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Gun;
@@ -118,7 +118,7 @@ public final class ProjectileUtil {
 	}
 	
 	public static void switchWeapon(Player player, ItemStack is) {
-		Weapon w = Weapons.getWeaponByItemStack(is);
+		Weapon w = Items.getWeaponByItemStack(is);
 		weaponCooldown.put(player.getName(), 200L);
 		if (w instanceof Gun) {
 			Ammunition ammo = Ammunition.fromItemStack(is);
@@ -215,7 +215,7 @@ public final class ProjectileUtil {
 	public static void startReloading(Player player) {
 		if (isReloading(player)) return;
 		
-		Weapon w = Weapons.getWeaponByItemStack(player.getItemInHand());
+		Weapon w = Items.getWeaponByItemStack(player.getItemInHand());
 		if (!(w instanceof Gun)) return;
 		
 		Ammunition a = Ammunition.fromItemStack(player.getItemInHand());
@@ -247,7 +247,7 @@ class ReloadManager implements Runnable {
 	ReloadManager(Player player) {
 		p = player;
 		is = player.getItemInHand();
-		Weapon w = Weapons.getWeaponByItemStack(is);
+		Weapon w = Items.getWeaponByItemStack(is);
 		if (!(w instanceof Gun)) {
 			throw new IllegalArgumentException("ItemStack not instanceof Gun.");
 		}

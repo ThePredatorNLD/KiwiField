@@ -3,8 +3,8 @@ package me.KiwiLetsPlay.KiwiField;
 import java.util.HashMap;
 
 import me.KiwiLetsPlay.KiwiField.KiwiField;
+import me.KiwiLetsPlay.KiwiField.item.Items;
 import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
-import me.KiwiLetsPlay.KiwiField.item.weapon.Weapons;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.BlindnessGrenade;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.Grenade;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.HighExplosiveGrenade;
@@ -82,7 +82,7 @@ public class KiwiListener implements Listener {
 			return;
 		}
 		
-		Weapon w = Weapons.getWeaponByItemStack(player.getItemInHand());
+		Weapon w = Items.getWeaponByItemStack(player.getItemInHand());
 		if (!(w instanceof MeleeWeapon)) {
 			event.setCancelled(true);
 			PlayerInteractEvent pie = new PlayerInteractEvent(player, Action.RIGHT_CLICK_AIR, player.getItemInHand(), null, null);
@@ -112,7 +112,7 @@ public class KiwiListener implements Listener {
 			if (player.getGameMode() == GameMode.SURVIVAL) {
 				event.setCancelled(true);
 			}
-			Weapon w = Weapons.getWeaponByItemStack(player.getItemInHand());
+			Weapon w = Items.getWeaponByItemStack(player.getItemInHand());
 			if (w instanceof MeleeWeapon) {
 				if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
 				
@@ -126,7 +126,7 @@ public class KiwiListener implements Listener {
 			Player player = event.getPlayer();
 			if (player.getItemInHand() == null) return;
 			
-			Weapon w = Weapons.getWeaponByItemStack(player.getItemInHand());
+			Weapon w = Items.getWeaponByItemStack(player.getItemInHand());
 			if (w == null) return;
 			
 			setSpawnProtected(player, false);
@@ -277,7 +277,7 @@ public class KiwiListener implements Listener {
 			
 			Player damager = (Player) event.getDamager();
 			LivingEntity entity = (LivingEntity) event.getEntity();
-			Weapon w = Weapons.getWeaponByItemStack(damager.getItemInHand());
+			Weapon w = Items.getWeaponByItemStack(damager.getItemInHand());
 			
 			if (w == null || !(w instanceof MeleeWeapon)) return;
 			MeleeWeapon m = (MeleeWeapon) w;
@@ -422,7 +422,7 @@ class TickListener implements Runnable {
 	public void run() {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (p.isDead()) continue;
-			Weapon w = Weapons.getWeaponByItemStack(p.getItemInHand());
+			Weapon w = Items.getWeaponByItemStack(p.getItemInHand());
 			if (!(w instanceof Gun)) continue;
 			Gun g = (Gun) w;
 			if (!(g.isAutomatic())) continue;

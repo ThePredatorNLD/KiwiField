@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import me.KiwiLetsPlay.KiwiField.item.Items;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import me.KiwiLetsPlay.KiwiField.item.weapon.Weapons;
 
 public class Ammunition {
 	
@@ -18,7 +18,7 @@ public class Ammunition {
 	
 	public Ammunition(ItemStack is) {
 		itemStack = is;
-		Gun g = (Gun) Weapons.getWeaponByItemStack(is);
+		Gun g = (Gun) Items.getWeaponByItemStack(is);
 		primary = g.getAmmoCapacity();
 		secondary = g.getBackupAmmoCapacity();
 	}
@@ -47,7 +47,7 @@ public class Ammunition {
 	}
 	
 	public void reload(Player p) {
-		Gun g = (Gun) Weapons.getWeaponByItemStack(itemStack);
+		Gun g = (Gun) Items.getWeaponByItemStack(itemStack);
 		int loadable = getReloadableAmmo();
 		if (g instanceof SingleLoader) {
 			loadable = Math.min(loadable, 1);
@@ -59,7 +59,7 @@ public class Ammunition {
 	}
 	
 	public int getReloadableAmmo() {
-		Gun g = (Gun) Weapons.getWeaponByItemStack(itemStack);
+		Gun g = (Gun) Items.getWeaponByItemStack(itemStack);
 		return Math.min(secondary, g.getAmmoCapacity() - primary);
 	}
 	

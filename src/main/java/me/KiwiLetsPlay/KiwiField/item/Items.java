@@ -1,9 +1,10 @@
-package me.KiwiLetsPlay.KiwiField.item.weapon;
+package me.KiwiLetsPlay.KiwiField.item;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.*;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.heavy.*;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.pistol.*;
@@ -12,7 +13,7 @@ import me.KiwiLetsPlay.KiwiField.item.weapon.melee.*;
 
 import org.bukkit.inventory.ItemStack;
 
-public abstract class Weapons {
+public abstract class Items {
 	
 	private static final HashMap<Integer, Weapon> ids = new HashMap<Integer, Weapon>();
 	private static final HashMap<String, Weapon> names = new HashMap<String, Weapon>();
