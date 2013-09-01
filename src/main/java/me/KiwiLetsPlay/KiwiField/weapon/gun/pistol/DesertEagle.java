@@ -1,11 +1,15 @@
 package me.KiwiLetsPlay.KiwiField.weapon.gun.pistol;
 
+import java.util.ArrayList;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.KiwiLetsPlay.KiwiField.weapon.gun.Ammunition;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
 
 public class DesertEagle implements Gun {
@@ -20,7 +24,11 @@ public class DesertEagle implements Gun {
 		ItemStack is = new ItemStack(Material.FLINT, 1);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName("Desert Eagle");
+		ArrayList<String> lore = new ArrayList<String>();
+		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "Pistol");
+		im.setLore(lore);
 		is.setItemMeta(im);
+		Ammunition.setItemMeta(is, getAmmoCapacity(), getBackupAmmoCapacity());
 		return is;
 	}
 	
@@ -32,6 +40,11 @@ public class DesertEagle implements Gun {
 	@Override
 	public int getFiringCooldown() {
 		return 390;
+	}
+	
+	@Override
+	public int getReloadTime() {
+		return 2200;
 	}
 	
 	@Override

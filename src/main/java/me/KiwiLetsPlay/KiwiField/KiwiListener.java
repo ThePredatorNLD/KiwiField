@@ -10,7 +10,6 @@ import me.KiwiLetsPlay.KiwiField.weapon.grenade.Grenade;
 import me.KiwiLetsPlay.KiwiField.weapon.grenade.HighExplosiveGrenade;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.heavy.Nova;
-import me.KiwiLetsPlay.KiwiField.weapon.gun.heavy.Shotgun;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.pistol.DesertEagle;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.smg.MP7;
 import me.KiwiLetsPlay.KiwiField.weapon.melee.Knife;
@@ -40,6 +39,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -53,7 +53,7 @@ public class KiwiListener implements Listener {
 	
 	private HashMap<String, Boolean> headshot;
 	private HashMap<String, Long> spawnProtection;
-	private StatsUtil statsUtil;
+	private static StatsUtil statsUtil;
 	
 	public KiwiListener() {
 		headshot = new HashMap<String, Boolean>();
@@ -65,11 +65,11 @@ public class KiwiListener implements Listener {
 			statsUtil.setChatColor(p, ChatColor.GREEN);
 		}
 		
-		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new TickListener(this), 1, 1);
+		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new TickListener(), 1, 1);
 		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new SnowballRemover(), 20, 20);
 	}
 	
-	public StatsUtil getStatsUtil() {
+	public static StatsUtil getStatsUtil() {
 		return statsUtil;
 	}
 	
@@ -110,16 +110,18 @@ public class KiwiListener implements Listener {
 		
 		if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			Player player = event.getPlayer();
-			if (player.getGameMode() == GameMode.ADVENTURE) {
+			if (player.getGameMode() == GameMode.SURVIVAL) {
 				event.setCancelled(true);
 			}
 			Weapon w = Weapons.getWeaponByItemStack(player.getItemInHand());
 			if (w instanceof MeleeWeapon) {
 				if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
 				
-				ProjectileUtil.setUsingKnife(player, (MeleeWeapon) w, true, true);
+				setSpawnProtected(player, false);
 				statsUtil.registerWeaponUsed(player, w);
 				w.playFiringSound(player);
+			} else if (w instanceof Gun) {
+				ProjectileUtil.startReloading(player);
 			}
 		} else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Player player = event.getPlayer();
@@ -130,31 +132,15 @@ public class KiwiListener implements Listener {
 			
 			setSpawnProtected(player, false);
 			
-			if (w instanceof Shotgun) {
-				Shotgun g = (Shotgun) w;
-				
-				if (!(ProjectileUtil.isFiringWeapon(player))) {
-					if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
-					for (int i = 0; i < g.getPelletCount(); i++) {
-						ProjectileUtil.launchBullet(player, g);
-					}
-					ProjectileUtil.setWeaponCooldown(player, g, true);
-					statsUtil.registerWeaponUsed(player, w, g.getPelletCount());
-					w.playFiringSound(player);
-				}
-				
-				ProjectileUtil.setFiringWeapon(player, g, true);
-			} else if (w instanceof Gun) {
+			if (w instanceof Gun) {
 				Gun g = (Gun) w;
 				if (g.isAutomatic()) {
 					ProjectileUtil.setFiringWeapon(player, g, true);
 				} else {
 					if (!(ProjectileUtil.isFiringWeapon(player))) {
-						if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
-						ProjectileUtil.launchBullet(player, g);
-						ProjectileUtil.setWeaponCooldown(player, g, true);
-						statsUtil.registerWeaponUsed(player, w);
-						w.playFiringSound(player);
+						if (ProjectileUtil.launchBullet(player, g)) {
+							statsUtil.registerWeaponUsed(player, w);
+						}
 					}
 					
 					ProjectileUtil.setFiringWeapon(player, g, true);
@@ -187,7 +173,7 @@ public class KiwiListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		if (event.getPlayer().getGameMode() == GameMode.ADVENTURE) {
+		if (event.getPlayer().getGameMode() == GameMode.SURVIVAL) {
 			event.setCancelled(true);
 		}
 	}
@@ -404,6 +390,12 @@ public class KiwiListener implements Listener {
 		statsUtil.setChatColor(event.getPlayer(), ChatColor.GREEN);
 	}
 	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerItemHeldChange(PlayerItemHeldEvent event) {
+		ItemStack is = event.getPlayer().getInventory().getItem(event.getNewSlot());
+		ProjectileUtil.switchWeapon(event.getPlayer(), is);
+	}
+	
 	public void setSpawnProtected(Player player, boolean value) {
 		if (value) {
 			spawnProtection.put(player.getName(), System.currentTimeMillis() + 20000);
@@ -426,29 +418,22 @@ public class KiwiListener implements Listener {
 
 class TickListener implements Runnable {
 	
-	KiwiListener kl;
-	
-	public TickListener(KiwiListener kiwiListener) {
-		kl = kiwiListener;
-	}
-	
 	@Override
 	public void run() {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (p.isDead()) continue;
 			Weapon w = Weapons.getWeaponByItemStack(p.getItemInHand());
-			if (w == null) continue;
 			if (!(w instanceof Gun)) continue;
 			Gun g = (Gun) w;
 			if (!(g.isAutomatic())) continue;
 			
-			if (ProjectileUtil.isFiringWeapon(p) && ProjectileUtil.isWeaponCooledDown(p)) {
-				ProjectileUtil.launchBullet(p, g);
-				ProjectileUtil.setWeaponCooldown(p, g, true);
-				g.playFiringSound(p);
+			if (ProjectileUtil.isFiringWeapon(p)) {
+				if (ProjectileUtil.launchBullet(p, g)) {
+					KiwiListener.getStatsUtil().registerWeaponUsed(p, g);
+				}
 			}
 			
-			kl.getStatsUtil().registerWeaponUsed(p, w);
+			KiwiListener.getStatsUtil().registerWeaponUsed(p, w);
 		}
 	}
 }

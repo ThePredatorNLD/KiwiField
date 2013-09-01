@@ -1,12 +1,18 @@
 package me.KiwiLetsPlay.KiwiField.weapon.gun.heavy;
 
+import java.util.ArrayList;
+
+import me.KiwiLetsPlay.KiwiField.weapon.gun.Ammunition;
+import me.KiwiLetsPlay.KiwiField.weapon.gun.SingleLoader;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class Nova implements Shotgun {
+public class Nova implements Shotgun, SingleLoader {
 	
 	@Override
 	public String getName() {
@@ -18,7 +24,11 @@ public class Nova implements Shotgun {
 		ItemStack is = new ItemStack(Material.GLOWSTONE_DUST, 1);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(getName());
+		ArrayList<String> lore = new ArrayList<String>();
+		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "Shotgun");
+		im.setLore(lore);
 		is.setItemMeta(im);
+		Ammunition.setItemMeta(is, getAmmoCapacity(), getBackupAmmoCapacity());
 		return is;
 	}
 	
@@ -30,6 +40,21 @@ public class Nova implements Shotgun {
 	@Override
 	public int getFiringCooldown() {
 		return 890;
+	}
+	
+	@Override
+	public int getReloadStartTime() {
+		return 366;
+	}
+	
+	@Override
+	public int getReloadTime() {
+		return 433;
+	}
+	
+	@Override
+	public int getReloadEndTime() {
+		return 800;
 	}
 	
 	@Override

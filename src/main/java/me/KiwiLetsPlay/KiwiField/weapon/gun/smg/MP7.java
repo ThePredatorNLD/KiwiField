@@ -1,11 +1,15 @@
 package me.KiwiLetsPlay.KiwiField.weapon.gun.smg;
 
+import java.util.ArrayList;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.KiwiLetsPlay.KiwiField.weapon.gun.Ammunition;
 import me.KiwiLetsPlay.KiwiField.weapon.gun.Gun;
 
 public class MP7 implements Gun {
@@ -20,7 +24,11 @@ public class MP7 implements Gun {
 		ItemStack is = new ItemStack(Material.SLIME_BALL, 1);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(getName());
+		ArrayList<String> lore = new ArrayList<String>();
+		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "SMG");
+		im.setLore(lore);
 		is.setItemMeta(im);
+		Ammunition.setItemMeta(is, getAmmoCapacity(), getBackupAmmoCapacity());
 		return is;
 	}
 	
@@ -62,6 +70,11 @@ public class MP7 implements Gun {
 	@Override
 	public double getBulletSpeed() {
 		return 10;
+	}
+	
+	@Override
+	public int getReloadTime() {
+		return 3133;
 	}
 	
 	@Override

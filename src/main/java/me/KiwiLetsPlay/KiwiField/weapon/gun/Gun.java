@@ -8,6 +8,8 @@ public interface Gun extends Weapon {
 	
 	public int getBackupAmmoCapacity();
 	
+	public int getReloadTime();
+	
 	public double getBaseRecoil();
 	
 	public double getRecoilModifier();

@@ -77,7 +77,7 @@ public class HighExplosiveGrenade implements Grenade {
 					dmg *= 0.9;
 				}
 				
-				kl.getStatsUtil().registerWeaponHit(shooter, p, getName(), dmg, false);
+				KiwiListener.getStatsUtil().registerWeaponHit(shooter, p, getName(), dmg, false);
 			}
 			
 			le.setNoDamageTicks(0);
