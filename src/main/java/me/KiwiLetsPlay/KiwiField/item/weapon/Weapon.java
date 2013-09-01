@@ -1,13 +1,10 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon;
 
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import me.KiwiLetsPlay.KiwiField.item.Item;
 
-public interface Weapon {
-	
-	public String getName();
-	
-	public ItemStack getItemStack();
+import org.bukkit.entity.Player;
+
+public interface Weapon extends Item {
 	
 	public double getDamage();
 	
