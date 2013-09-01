@@ -45,17 +45,21 @@ public final class ProjectileUtil {
 	}
 	
 	private static boolean launchBullet(Player player, Gun g, int count) {
-		if (isReloading(player)) return false;
+		if (isReloading(player)) {
+			if (g instanceof SingleLoader) {
+				reloading.get(player.getName()).cancel();
+			} else {
+				return false;
+			}
+		}
 		if (!(isWeaponCooledDown(player))) return false;
 		if (!(Ammunition.fromItemStack(player.getItemInHand()).shoot())) {
 			player.playSound(player.getLocation(), Sound.CLICK, 0.5f, 1.75f);
 			return false;
 		}
 		
-		Location spawn = player.getLocation().add(0, 1.2, 0);
-		spawn.add(spawn.getDirection().multiply(0.3));
-		spawn.setPitch(0);
-		spawn.add(spawn.getDirection().multiply(0.2));
+		Location spawn = player.getLocation().add(0, 1.525, 0);
+		spawn.add(spawn.getDirection().multiply(-0.21));
 		
 		for (int i = 0; i < count; i++) {
 			Location dirLoc = player.getLocation();
@@ -77,8 +81,7 @@ public final class ProjectileUtil {
 			dirLoc.setYaw((float) (dirLoc.getYaw() - (spray / 2) + Math.random() * spray));
 			
 			Vector dir = dirLoc.getDirection();
-			dir.setY(dir.getY() + (0.6 / g.getBulletSpeed()));
-			dir = dir.multiply(0.3 * g.getBulletSpeed());
+			dir = dir.multiply(0.5 * g.getBulletSpeed());
 			
 			Projectile p = (Projectile) player.getWorld().spawnEntity(spawn, EntityType.SNOWBALL);
 			p.setVelocity(dir);
@@ -86,6 +89,7 @@ public final class ProjectileUtil {
 			p.setMetadata("weaponname", new FixedMetadataValue(KiwiField.getInstance(), g.getName()));
 			p.setMetadata("damage", new FixedMetadataValue(KiwiField.getInstance(), g.getDamage()));
 			p.setMetadata("piercing", new FixedMetadataValue(KiwiField.getInstance(), g.isArmorPiercing()));
+			NoGravityUtil.getInstance().register(p);
 		}
 		
 		g.playFiringSound(player);
@@ -198,10 +202,6 @@ public final class ProjectileUtil {
 		}
 	}
 	
-	public static void setReloadCooldown(Player player, SingleLoader sl) {
-		weaponCooldown.put(player.getName(), System.currentTimeMillis() + sl.getReloadEndTime());
-	}
-	
 	public static boolean isWeaponCooledDown(Player player) {
 		Long val = weaponCooldown.get(player.getName());
 		if (val == null) {
@@ -234,13 +234,14 @@ public final class ProjectileUtil {
 
 class ReloadManager implements Runnable {
 	
-	final Player p;
-	final ItemStack is;
-	final Gun g;
-	final int reloadTicks;
-	int waitAccumulated;
-	int waitBefore;
-	int wait;
+	private final Player p;
+	private final ItemStack is;
+	private final Gun g;
+	private final int reloadTicks;
+	private int waitAccumulated;
+	private int waitBefore;
+	private int wait;
+	private boolean cancelled;
 	
 	ReloadManager(Player player) {
 		p = player;
@@ -263,8 +264,8 @@ class ReloadManager implements Runnable {
 	
 	@Override
 	public void run() {
-		// Return if player is dead, left or selected another gun.
-		if (p == null || p.isDead() || !is.equals(p.getItemInHand())) {
+		// Return if reloading is cancelled, or player is dead, left or selected another gun.
+		if (cancelled || p == null || p.isDead() || !is.equals(p.getItemInHand())) {
 			p.setExp(0f);
 			waitAccumulated = reloadTicks;
 			return;
@@ -297,7 +298,6 @@ class ReloadManager implements Runnable {
 				wait = (int) (g.getReloadTime() / 50);
 				Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), this, 1);
 			} else {
-				ProjectileUtil.setReloadCooldown(p, (SingleLoader) g);
 				p.setExp(0f);
 			}
 		} else {
@@ -307,5 +307,9 @@ class ReloadManager implements Runnable {
 	
 	public boolean isDone() {
 		return (reloadTicks == waitAccumulated);
+	}
+	
+	public void cancel() {
+		cancelled = true;
 	}
 }

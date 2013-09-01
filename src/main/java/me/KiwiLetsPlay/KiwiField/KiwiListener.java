@@ -21,13 +21,11 @@ import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -66,7 +64,7 @@ public class KiwiListener implements Listener {
 		}
 		
 		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new TickListener(), 1, 1);
-		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new SnowballRemover(), 20, 20);
+		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new NoGravityUtil(), 1, 1);
 	}
 	
 	public static StatsUtil getStatsUtil() {
@@ -434,19 +432,6 @@ class TickListener implements Runnable {
 			}
 			
 			KiwiListener.getStatsUtil().registerWeaponUsed(p, w);
-		}
-	}
-}
-
-class SnowballRemover implements Runnable {
-	
-	@Override
-	public void run() {
-		World w = Bukkit.getWorlds().get(0);
-		for (Snowball sb : w.getEntitiesByClass(Snowball.class)) {
-			if (sb.getTicksLived() > 60) {
-				sb.remove();
-			}
 		}
 	}
 }
