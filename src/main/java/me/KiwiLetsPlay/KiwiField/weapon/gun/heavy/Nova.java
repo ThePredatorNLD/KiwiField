@@ -94,7 +94,7 @@ public class Nova implements Shotgun, SingleLoader {
 	
 	@Override
 	public boolean isAutomatic() {
-		return false;
+		return true;
 	}
 	
 	@Override
