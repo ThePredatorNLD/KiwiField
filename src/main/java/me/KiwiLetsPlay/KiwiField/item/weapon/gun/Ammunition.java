@@ -18,7 +18,7 @@ public class Ammunition {
 	
 	public Ammunition(ItemStack is) {
 		itemStack = is;
-		Gun g = (Gun) Items.getWeaponByItemStack(is);
+		Gun g = (Gun) Items.getItemByItemStack(is);
 		primary = g.getAmmoCapacity();
 		secondary = g.getBackupAmmoCapacity();
 	}
@@ -47,7 +47,7 @@ public class Ammunition {
 	}
 	
 	public void reload(Player p) {
-		Gun g = (Gun) Items.getWeaponByItemStack(itemStack);
+		Gun g = (Gun) Items.getItemByItemStack(itemStack);
 		int loadable = getReloadableAmmo();
 		if (g instanceof SingleLoader) {
 			loadable = Math.min(loadable, 1);
@@ -59,7 +59,7 @@ public class Ammunition {
 	}
 	
 	public int getReloadableAmmo() {
-		Gun g = (Gun) Items.getWeaponByItemStack(itemStack);
+		Gun g = (Gun) Items.getItemByItemStack(itemStack);
 		return Math.min(secondary, g.getAmmoCapacity() - primary);
 	}
 	

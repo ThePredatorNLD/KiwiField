@@ -118,9 +118,9 @@ public final class ProjectileUtil {
 	}
 	
 	public static void switchWeapon(Player player, ItemStack is) {
-		Weapon w = Items.getWeaponByItemStack(is);
+		me.KiwiLetsPlay.KiwiField.item.Item i = Items.getItemByItemStack(is);
 		weaponCooldown.put(player.getName(), 200L);
-		if (w instanceof Gun) {
+		if (i instanceof Gun) {
 			Ammunition ammo = Ammunition.fromItemStack(is);
 			player.setLevel(ammo.getBackupAmmo());
 		} else {
@@ -215,7 +215,7 @@ public final class ProjectileUtil {
 	public static void startReloading(Player player) {
 		if (isReloading(player)) return;
 		
-		Weapon w = Items.getWeaponByItemStack(player.getItemInHand());
+		Weapon w = Items.getWeaponByPlayer(player);
 		if (!(w instanceof Gun)) return;
 		
 		Ammunition a = Ammunition.fromItemStack(player.getItemInHand());
@@ -247,11 +247,11 @@ class ReloadManager implements Runnable {
 	ReloadManager(Player player) {
 		p = player;
 		is = player.getItemInHand();
-		Weapon w = Items.getWeaponByItemStack(is);
-		if (!(w instanceof Gun)) {
+		me.KiwiLetsPlay.KiwiField.item.Item i = Items.getItemByItemStack(is);
+		if (!(i instanceof Gun)) {
 			throw new IllegalArgumentException("ItemStack not instanceof Gun.");
 		}
-		g = (Gun) w;
+		g = (Gun) i;
 		wait = (int) g.getReloadTime() / 50;
 		if (g instanceof SingleLoader) {
 			Ammunition a = Ammunition.fromItemStack(is);

@@ -11,13 +11,14 @@ import me.KiwiLetsPlay.KiwiField.item.weapon.gun.pistol.*;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.smg.*;
 import me.KiwiLetsPlay.KiwiField.item.weapon.melee.*;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class Items {
 	
-	private static final HashMap<Integer, Weapon> ids = new HashMap<Integer, Weapon>();
-	private static final HashMap<String, Weapon> names = new HashMap<String, Weapon>();
-	private static final List<Weapon> weapons = new ArrayList<Weapon>();
+	private static final HashMap<Integer, Item> ids = new HashMap<Integer, Item>();
+	private static final HashMap<String, Item> names = new HashMap<String, Item>();
+	private static final List<Item> items = new ArrayList<Item>();
 	
 	// Pistols
 	public static final DesertEagle DESERT_EAGLE = new DesertEagle();
@@ -42,48 +43,56 @@ public abstract class Items {
 	
 	static {
 		// Pistols
-		addWeapon(DESERT_EAGLE);
+		addItem(DESERT_EAGLE);
 		
 		// Heavy weapons (shotguns and MGs)
-		addWeapon(NOVA);
+		addItem(NOVA);
 		
 		// SMGs
-		addWeapon(MP7);
+		addItem(MP7);
 		
 		// Rifles
 		
 		
 		// Grenades
-		addWeapon(HIGH_EXPLOSIVE_GRENADE);
-		addWeapon(BLINDNESS_GRENADE);
-		addWeapon(SMOKE_GRENADE);
+		addItem(HIGH_EXPLOSIVE_GRENADE);
+		addItem(BLINDNESS_GRENADE);
+		addItem(SMOKE_GRENADE);
 		
 		// Melee
-		addWeapon(KNIFE);
-		addWeapon(GOLDEN_KNIFE);
+		addItem(KNIFE);
+		addItem(GOLDEN_KNIFE);
 	}
 	
-	public static Weapon getWeaponByItemStack(ItemStack itemStack) {
+	public static Weapon getWeaponByPlayer(Player player) {
+		ItemStack itemStack = player.getItemInHand();
+		if (itemStack == null) return null;
+		Item i = ids.get(itemStack.getTypeId());
+		if (!(i instanceof Weapon)) return null;
+		return (Weapon) i;
+	}
+	
+	public static Item getItemByItemStack(ItemStack itemStack) {
 		if (itemStack == null) return null;
 		return ids.get(itemStack.getTypeId());
 	}
 	
-	public static Weapon getWeaponByName(String name) {
+	public static Item getItemByName(String name) {
 		if (name == null) return null;
 		return names.get(name);
 	}
 	
-	public static Weapon getWeaponByID(int typeID) {
+	public static Item getItemByID(int typeID) {
 		return ids.get(typeID);
 	}
 	
 	public static Weapon[] getWeapons() {
-		return weapons.toArray(new Weapon[0]);
+		return items.toArray(new Weapon[0]);
 	}
 	
-	private static void addWeapon(Weapon w) {
-		ids.put(w.getItemStack().getTypeId(), w);
-		names.put(w.getName(), w);
-		weapons.add(w);
+	private static void addItem(Item i) {
+		ids.put(i.getItemStack().getTypeId(), i);
+		names.put(i.getName(), i);
+		items.add(i);
 	}
 }
