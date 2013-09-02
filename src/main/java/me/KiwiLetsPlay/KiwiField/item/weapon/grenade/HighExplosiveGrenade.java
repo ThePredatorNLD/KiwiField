@@ -104,12 +104,17 @@ public class HighExplosiveGrenade implements Grenade {
 	}
 	
 	@Override
-	public long getFuseLenght() {
+	public int getFuseLenght() {
 		return 40;
 	}
 	
 	@Override
 	public int getPrice() {
 		return 300;
+	}
+	
+	@Override
+	public int getTimesBuyable() {
+		return 1;
 	}
 }

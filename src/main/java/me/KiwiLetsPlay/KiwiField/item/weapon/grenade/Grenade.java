@@ -10,5 +10,7 @@ public interface Grenade extends Weapon, Buyable {
 	
 	public void explode(Item i, KiwiListener kl);
 	
-	public long getFuseLenght();
+	public int getFuseLenght();
+	
+	public int getTimesBuyable();
 }
