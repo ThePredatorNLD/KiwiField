@@ -109,8 +109,14 @@ public final class ProjectileUtil {
 		dir.setY(dir.getY() + 0.06);
 		dir = dir.multiply(1.4);
 		
-		Item i = player.getWorld().dropItem(spawn, player.getItemInHand());
-		player.getInventory().clear(player.getInventory().getHeldItemSlot());
+		ItemStack hand = player.getItemInHand().clone();
+		hand.setAmount(1);
+		Item i = player.getWorld().dropItem(spawn, hand);
+		if (player.getItemInHand().getAmount() > 1) {
+			player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
+		} else {
+			player.getInventory().clear(player.getInventory().getHeldItemSlot());
+		}
 		i.setPickupDelay(Integer.MAX_VALUE);
 		i.setVelocity(dir);
 		i.setMetadata("weaponname", new FixedMetadataValue(KiwiField.getInstance(), g.getName()));

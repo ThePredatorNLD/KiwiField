@@ -70,7 +70,6 @@ public class BlindnessGrenade implements Grenade {
 			Vector d2 = new Vector(dx, dy, dz).normalize();
 			
 			double arc = d1.dot(d2);
-			((Player) le).sendMessage(String.valueOf(arc));
 			if (arc > 0.6) {
 				double dist = Math.max(1, i.getLocation().distance(le.getLocation()) / 5);
 				double time = 200 * arc / dist;
