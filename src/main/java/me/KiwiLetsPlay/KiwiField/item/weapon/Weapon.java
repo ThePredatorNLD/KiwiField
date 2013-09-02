@@ -1,10 +1,10 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon;
 
-import me.KiwiLetsPlay.KiwiField.item.Item;
+import me.KiwiLetsPlay.KiwiField.item.GameItem;
 
 import org.bukkit.entity.Player;
 
-public interface Weapon extends Item {
+public interface Weapon extends GameItem {
 	
 	public double getDamage();
 	

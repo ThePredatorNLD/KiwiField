@@ -2,6 +2,7 @@ package me.KiwiLetsPlay.KiwiField;
 
 import java.util.HashMap;
 
+import me.KiwiLetsPlay.KiwiField.item.GameItem;
 import me.KiwiLetsPlay.KiwiField.item.Items;
 import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.Grenade;
@@ -118,7 +119,7 @@ public final class ProjectileUtil {
 	}
 	
 	public static void switchWeapon(Player player, ItemStack is) {
-		me.KiwiLetsPlay.KiwiField.item.Item i = Items.getItemByItemStack(is);
+		GameItem i = Items.getItemByItemStack(is);
 		weaponCooldown.put(player.getName(), 200L);
 		if (i instanceof Gun) {
 			Ammunition ammo = Ammunition.fromItemStack(is);
@@ -247,7 +248,7 @@ class ReloadManager implements Runnable {
 	ReloadManager(Player player) {
 		p = player;
 		is = player.getItemInHand();
-		me.KiwiLetsPlay.KiwiField.item.Item i = Items.getItemByItemStack(is);
+		GameItem i = Items.getItemByItemStack(is);
 		if (!(i instanceof Gun)) {
 			throw new IllegalArgumentException("ItemStack not instanceof Gun.");
 		}

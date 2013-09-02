@@ -2,7 +2,7 @@ package me.KiwiLetsPlay.KiwiField.item;
 
 import org.bukkit.inventory.ItemStack;
 
-public interface Item {
+public interface GameItem {
 	
 	public String getName();
 	

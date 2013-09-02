@@ -16,9 +16,9 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class Items {
 	
-	private static final HashMap<Integer, Item> ids = new HashMap<Integer, Item>();
-	private static final HashMap<String, Item> names = new HashMap<String, Item>();
-	private static final List<Item> items = new ArrayList<Item>();
+	private static final HashMap<Integer, GameItem> ids = new HashMap<Integer, GameItem>();
+	private static final HashMap<String, GameItem> names = new HashMap<String, GameItem>();
+	private static final List<GameItem> items = new ArrayList<GameItem>();
 	
 	// Pistols
 	public static final DesertEagle DESERT_EAGLE = new DesertEagle();
@@ -67,22 +67,22 @@ public abstract class Items {
 	public static Weapon getWeaponByPlayer(Player player) {
 		ItemStack itemStack = player.getItemInHand();
 		if (itemStack == null) return null;
-		Item i = ids.get(itemStack.getTypeId());
+		GameItem i = ids.get(itemStack.getTypeId());
 		if (!(i instanceof Weapon)) return null;
 		return (Weapon) i;
 	}
 	
-	public static Item getItemByItemStack(ItemStack itemStack) {
+	public static GameItem getItemByItemStack(ItemStack itemStack) {
 		if (itemStack == null) return null;
 		return ids.get(itemStack.getTypeId());
 	}
 	
-	public static Item getItemByName(String name) {
+	public static GameItem getItemByName(String name) {
 		if (name == null) return null;
 		return names.get(name);
 	}
 	
-	public static Item getItemByID(int typeID) {
+	public static GameItem getItemByID(int typeID) {
 		return ids.get(typeID);
 	}
 	
@@ -90,7 +90,7 @@ public abstract class Items {
 		return items.toArray(new Weapon[0]);
 	}
 	
-	private static void addItem(Item i) {
+	private static void addItem(GameItem i) {
 		ids.put(i.getItemStack().getTypeId(), i);
 		names.put(i.getName(), i);
 		items.add(i);
