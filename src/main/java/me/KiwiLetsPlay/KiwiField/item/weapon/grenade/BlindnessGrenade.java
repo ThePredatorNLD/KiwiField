@@ -1,7 +1,10 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 
+import java.util.ArrayList;
+
 import me.KiwiLetsPlay.KiwiField.KiwiListener;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -26,6 +29,9 @@ public class BlindnessGrenade implements Grenade {
 		ItemStack is = new ItemStack(Material.BLAZE_ROD, 1);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(getName());
+		ArrayList<String> lore = new ArrayList<String>();
+		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "Grenade");
+		im.setLore(lore);
 		is.setItemMeta(im);
 		return is;
 	}

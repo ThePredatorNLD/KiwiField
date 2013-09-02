@@ -1,5 +1,7 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 
+import java.util.ArrayList;
+
 import me.KiwiLetsPlay.KiwiField.KiwiField;
 import me.KiwiLetsPlay.KiwiField.KiwiListener;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.util.FireworkEffectPlayer;
@@ -8,6 +10,7 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -28,6 +31,9 @@ public class SmokeGrenade implements Grenade {
 		ItemStack is = new ItemStack(Material.STICK, 1);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(getName());
+		ArrayList<String> lore = new ArrayList<String>();
+		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "Grenade");
+		im.setLore(lore);
 		is.setItemMeta(im);
 		return is;
 	}
