@@ -1,6 +1,6 @@
 package me.KiwiLetsPlay.KiwiField.item;
 
-public interface Buyable {
+public interface Buyable extends GameItem {
 	
 	public int getPrice();
 }
