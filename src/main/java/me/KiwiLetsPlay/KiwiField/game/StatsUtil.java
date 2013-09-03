@@ -33,7 +33,7 @@ public class StatsUtil {
 	private final Objective killsObjective;
 	private final Objective moneyObjective;
 	
-	public StatsUtil(Player[] players) {
+	public StatsUtil(Player[] players, GameType type) {
 		playerList = new ArrayList<Player>(Arrays.asList(players));
 		chatColors = new HashMap<String, ChatColor>();
 		kills = new HashMap<String, Integer>();
@@ -45,12 +45,16 @@ public class StatsUtil {
 		board = Bukkit.getScoreboardManager().getNewScoreboard();
 		invisibilityTeam = board.registerNewTeam("invisibility");
 		invisibilityTeam.setCanSeeFriendlyInvisibles(true);
-		// TODO: invisibilityTeam.setAllowFriendlyFire(value);
+		
+		invisibilityTeam.setAllowFriendlyFire(type.isFriendlyFireEnabled());
 		killsObjective = board.registerNewObjective("kills", "dummy");
 		killsObjective.setDisplayName(ChatColor.GREEN + "Kills");
 		killsObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		
 		moneyObjective = board.registerNewObjective("money", "dummy");
-		moneyObjective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+			if (type.hasMoneySystem()) {
+			moneyObjective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+		}
 		
 		for (Player p : players) {
 			p.setScoreboard(board);

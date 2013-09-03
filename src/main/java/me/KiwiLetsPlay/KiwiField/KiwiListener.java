@@ -3,7 +3,7 @@ package me.KiwiLetsPlay.KiwiField;
 import java.util.HashMap;
 
 import me.KiwiLetsPlay.KiwiField.KiwiField;
-import me.KiwiLetsPlay.KiwiField.game.StatsUtil;
+import me.KiwiLetsPlay.KiwiField.game.Game;
 import me.KiwiLetsPlay.KiwiField.item.Items;
 import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.Grenade;
@@ -40,31 +40,15 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class KiwiListener implements Listener {
 	
 	private HashMap<String, Boolean> headshot;
-	private HashMap<String, Long> spawnProtection;
-	private static StatsUtil statsUtil;
 	
 	public KiwiListener() {
 		headshot = new HashMap<String, Boolean>();
-		spawnProtection = new HashMap<String, Long>();
-		
-		statsUtil = new StatsUtil(Bukkit.getOnlinePlayers());
-		// TEMP
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			statsUtil.setChatColor(p, ChatColor.GREEN);
-		}
 		
 		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new TickListener(), 1, 1);
-		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new NoGravityUtil(), 1, 1);
-	}
-	
-	public static StatsUtil getStatsUtil() {
-		return statsUtil;
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -92,7 +76,7 @@ public class KiwiListener implements Listener {
 		
 		ProjectileUtil.setUsingKnife(player, (MeleeWeapon) w, false, true);
 		w.playFiringSound(player);
-		statsUtil.registerWeaponUsed(player, w);
+		Game.getCurrent().getStatsTracker().registerWeaponUsed(player, w);
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
@@ -111,8 +95,8 @@ public class KiwiListener implements Listener {
 			if (w instanceof MeleeWeapon) {
 				if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
 				
-				setSpawnProtected(player, false);
-				statsUtil.registerWeaponUsed(player, w);
+				Game.getCurrent().setSpawnProtected(player, false);
+				Game.getCurrent().getStatsTracker().registerWeaponUsed(player, w);
 				w.playFiringSound(player);
 			} else if (w instanceof Gun) {
 				ProjectileUtil.startReloading(player);
@@ -124,7 +108,7 @@ public class KiwiListener implements Listener {
 			Weapon w = Items.getWeaponByPlayer(player);
 			if (w == null) return;
 			
-			setSpawnProtected(player, false);
+			Game.getCurrent().setSpawnProtected(player, false);
 			
 			if (w instanceof Gun) {
 				Gun g = (Gun) w;
@@ -133,7 +117,7 @@ public class KiwiListener implements Listener {
 				} else {
 					if (!(ProjectileUtil.isFiringWeapon(player))) {
 						if (ProjectileUtil.launchBullet(player, g)) {
-							statsUtil.registerWeaponUsed(player, w);
+							Game.getCurrent().getStatsTracker().registerWeaponUsed(player, w);
 						}
 					}
 					
@@ -145,16 +129,16 @@ public class KiwiListener implements Listener {
 				Grenade g = (Grenade) w;
 				Item i = ProjectileUtil.launchGrenade(player, g);
 				ProjectileUtil.setWeaponCooldown(player, g, true);
-				statsUtil.registerWeaponUsed(player, w);
+				Game.getCurrent().getStatsTracker().registerWeaponUsed(player, w);
 				g.playFiringSound(player);
 				
-				GrenadeExploder ge = new GrenadeExploder(g, i, this);
+				GrenadeExploder ge = new GrenadeExploder(g, i);
 				Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), ge, g.getFuseLenght());
 			} else if (w instanceof MeleeWeapon) {
 				if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
 				
 				ProjectileUtil.setUsingKnife(player, (MeleeWeapon) w, false, true);
-				statsUtil.registerWeaponUsed(player, w);
+				Game.getCurrent().getStatsTracker().registerWeaponUsed(player, w);
 				w.playFiringSound(player);
 			}
 		}
@@ -197,7 +181,7 @@ public class KiwiListener implements Listener {
 				if (hs) sb.append(ChatColor.GOLD).append("<+> ");
 				sb.append(ChatColor.RED).append(corpse.getName());
 				
-				statsUtil.registerPlayerKilled(shooter, corpse, weaponname, hs);
+				Game.getCurrent().getStatsTracker().registerPlayerKilled(shooter, corpse, weaponname, hs);
 			} else if (projectileHit.getDamager().getType() == EntityType.DROPPED_ITEM) {
 				Item item = (Item) projectileHit.getDamager();
 				Player shooter = (Player) item.getMetadata("shooter").get(0).value();
@@ -208,7 +192,7 @@ public class KiwiListener implements Listener {
 				sb.append(" [").append(weaponname).append("] ");
 				sb.append(ChatColor.RED).append(corpse.getName());
 				
-				statsUtil.registerPlayerKilled(shooter, corpse, weaponname, false);
+				Game.getCurrent().getStatsTracker().registerPlayerKilled(shooter, corpse, weaponname, false);
 			}
 			break;
 		case ENTITY_ATTACK:
@@ -225,13 +209,13 @@ public class KiwiListener implements Listener {
 			sb.append(ChatColor.WHITE).append(" [KNIFE] ");
 			sb.append(ChatColor.RED).append(victim.getName());
 			
-			statsUtil.registerPlayerKilled(damager, victim, "Knife", false);
+			Game.getCurrent().getStatsTracker().registerPlayerKilled(damager, victim, "Knife", false);
 			break;
 		default:
 			sb.append(ChatColor.RED).append(event.getEntity().getName());
 			sb.append(ChatColor.WHITE).append(" killed himself.");
 			
-			statsUtil.registerPlayerKilled(event.getEntity(), event.getEntity(), "Stupidity", false);
+			Game.getCurrent().getStatsTracker().registerPlayerKilled(event.getEntity(), event.getEntity(), "Stupidity", false);
 			break;
 		}
 		
@@ -242,7 +226,7 @@ public class KiwiListener implements Listener {
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
 		
-		setSpawnProtected(player, true);
+		Game.getCurrent().setSpawnProtected(player, true);
 		
 		player.closeInventory();
 		player.getInventory().clear();
@@ -250,7 +234,9 @@ public class KiwiListener implements Listener {
 		// Subject to change
 		player.getInventory().setItem(1, Items.DESERT_EAGLE.getItemStack());
 		player.getInventory().setItem(2, Items.KNIFE.getItemStack());
-		player.getInventory().setItem(8, WeaponShop.getItemStack());
+		if (Game.getCurrent().hasWeaponShop()) {
+			player.getInventory().setItem(8, WeaponShop.getItemStack());
+		}
 		
 		player.getInventory().setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE, 1));
 		player.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));
@@ -285,7 +271,7 @@ public class KiwiListener implements Listener {
 					damage = m.getDamage();
 				}
 			} else {
-				if (entity instanceof Player && isSpawnProtected((Player) entity)) return;
+				if (entity instanceof Player && Game.getCurrent().isSpawnProtected((Player) entity)) return;
 				if (!(ProjectileUtil.isWeaponCooledDown(damager))) return;
 				
 				if (Math.abs(diff) < 60) {
@@ -295,7 +281,7 @@ public class KiwiListener implements Listener {
 					damage = m.getSecondaryDamage();
 				}
 				ProjectileUtil.setUsingKnife(damager, m, true, true);
-				statsUtil.registerWeaponUsed(damager, w);
+				Game.getCurrent().getStatsTracker().registerWeaponUsed(damager, w);
 				w.playFiringSound(damager);
 			}
 			
@@ -317,7 +303,7 @@ public class KiwiListener implements Listener {
 			if (event.getEntityType() == EntityType.PLAYER) {
 				Player player = (Player) event.getEntity();
 				
-				if (isSpawnProtected(player)) {
+				if (Game.getCurrent().isSpawnProtected(player)) {
 					event.setCancelled(true);
 					return;
 				}
@@ -356,7 +342,7 @@ public class KiwiListener implements Listener {
 		
 		if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY()
 				|| from.getBlockZ() != to.getBlockZ()) {
-			setSpawnProtected(p, false);
+			Game.getCurrent().setSpawnProtected(p, false);
 		}
 		
 		if (from.getX() != to.getX() || from.getZ() != to.getZ()) {
@@ -376,9 +362,9 @@ public class KiwiListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		statsUtil.addPlayer(event.getPlayer());
+		Game.getCurrent().getStatsTracker().addPlayer(event.getPlayer());
 		// TEMP
-		statsUtil.setChatColor(event.getPlayer(), ChatColor.GREEN);
+		Game.getCurrent().getStatsTracker().setChatColor(event.getPlayer(), ChatColor.GREEN);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -386,31 +372,14 @@ public class KiwiListener implements Listener {
 		ItemStack is = event.getPlayer().getInventory().getItem(event.getNewSlot());
 		ProjectileUtil.switchWeapon(event.getPlayer(), is);
 	}
-	
-	public void setSpawnProtected(Player player, boolean value) {
-		if (value) {
-			spawnProtection.put(player.getName(), System.currentTimeMillis() + 20000);
-			Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), new InvisibilityAdder(player), 1);
-		} else {
-			spawnProtection.remove(player.getName());
-			player.removePotionEffect(PotionEffectType.INVISIBILITY);
-		}
-	}
-	
-	public boolean isSpawnProtected(Player player) {
-		Long val = spawnProtection.get(player.getName());
-		if (val == null) {
-			return false;
-		} else {
-			return val > System.currentTimeMillis();
-		}
-	}
 }
 
 class TickListener implements Runnable {
 	
 	@Override
 	public void run() {
+		Game game = Game.getCurrent();
+		if (game == null) return;
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (p.isDead()) continue;
 			Weapon w = Items.getWeaponByPlayer(p);
@@ -420,11 +389,11 @@ class TickListener implements Runnable {
 			
 			if (ProjectileUtil.isFiringWeapon(p)) {
 				if (ProjectileUtil.launchBullet(p, g)) {
-					KiwiListener.getStatsUtil().registerWeaponUsed(p, g);
+					game.getStatsTracker().registerWeaponUsed(p, g);
 				}
 			}
 			
-			KiwiListener.getStatsUtil().registerWeaponUsed(p, w);
+			game.getStatsTracker().registerWeaponUsed(p, w);
 		}
 	}
 }
@@ -433,31 +402,15 @@ class GrenadeExploder implements Runnable {
 	
 	Grenade g;
 	Item i;
-	KiwiListener kl;
 	
-	GrenadeExploder(Grenade grenade, Item item, KiwiListener kiwiListener) {
+	GrenadeExploder(Grenade grenade, Item item) {
 		g = grenade;
 		i = item;
-		kl = kiwiListener;
 	}
 	
 	@Override
 	public void run() {
-		g.explode(i, kl);
+		g.explode(i);
 		i.remove();
-	}
-}
-
-class InvisibilityAdder implements Runnable {
-	
-	Player p;
-	
-	InvisibilityAdder(Player player) {
-		p = player;
-	}
-	
-	@Override
-	public void run() {
-		p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 400, 1));
 	}
 }

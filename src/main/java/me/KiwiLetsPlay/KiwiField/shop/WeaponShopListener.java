@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import me.KiwiLetsPlay.KiwiField.KiwiListener;
+import me.KiwiLetsPlay.KiwiField.game.Game;
+import me.KiwiLetsPlay.KiwiField.game.GameType;
 import me.KiwiLetsPlay.KiwiField.item.Buyable;
 import me.KiwiLetsPlay.KiwiField.item.Items;
 import me.KiwiLetsPlay.KiwiField.item.equipment.Equipment;
@@ -51,12 +52,11 @@ public class WeaponShopListener implements Listener {
 		Buyable b = (Buyable) Items.getItemByItemStack(e.getCurrentItem());
 		if (b == null) return;
 		
-		int money = KiwiListener.getStatsUtil().getMoney(p);
-		// TODO:
-//		if (money < b.getPrice()) {
-//			p.sendMessage("Insufficient funds!");
-//			return;
-//		}
+		int money = Game.getCurrent().getStatsTracker().getMoney(p);
+		if (Game.getCurrent().hasMoneySystem() && money < b.getPrice()) {
+			p.sendMessage("Insufficient funds!");
+			return;
+		}
 		
 		ItemStack is = b.getItemStack();
 		if (b instanceof Grenade) {
@@ -94,6 +94,12 @@ public class WeaponShopListener implements Listener {
 				p.getInventory().setHeldItemSlot(0);
 			}
 		} else if (b instanceof Equipment) {
+			GameType gt = Game.getCurrent().getType();
+			if (gt != GameType.CLASSICAL_BOMB_DEFUSAL && gt != GameType.CLASSICAL_HOSTAGE_RESCUE) {
+				p.sendMessage("Disabled in this game mode.");
+				return;
+			}
+			
 			List<ItemStack> items = new ArrayList<ItemStack>();
 			items.addAll(Arrays.asList(p.getInventory().getContents()));
 			items.add(p.getInventory().getChestplate());
@@ -108,7 +114,7 @@ public class WeaponShopListener implements Listener {
 		} else {
 			return;
 		}
-		KiwiListener.getStatsUtil().setMoney(p, money - b.getPrice());
+		Game.getCurrent().getStatsTracker().setMoney(p, money - b.getPrice());
 	}
 	
 	private void clearItemSlot(Player p, int slot) {

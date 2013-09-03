@@ -3,7 +3,6 @@ package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 import java.util.ArrayList;
 
 import me.KiwiLetsPlay.KiwiField.KiwiField;
-import me.KiwiLetsPlay.KiwiField.KiwiListener;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.util.FireworkEffectPlayer;
 
 import org.bukkit.Color;
@@ -54,7 +53,7 @@ public class SmokeGrenade implements Grenade {
 	}
 	
 	@Override
-	public void explode(Item i, KiwiListener kl) {
+	public void explode(Item i) {
 		AreaSmoker as = new AreaSmoker(i.getLocation());
 		Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), as, 3);
 	}

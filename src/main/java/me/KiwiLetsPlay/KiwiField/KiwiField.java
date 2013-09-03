@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import me.KiwiLetsPlay.KiwiField.game.Game;
+import me.KiwiLetsPlay.KiwiField.game.GameType;
 import me.KiwiLetsPlay.KiwiField.shop.WeaponShopListener;
 
 import org.bukkit.Bukkit;
@@ -37,14 +39,21 @@ public class KiwiField extends JavaPlugin {
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvents(new KiwiListener(), this);
 		pm.registerEvents(new WeaponShopListener(), this);
-		//System.out.println("[KiwiField] Plugin aktiviert");
 		
 		manager = Bukkit.getScoreboardManager();
 		board = manager.getMainScoreboard();
+		
+		// Subject to change
+		Game g = new Game(Bukkit.getOnlinePlayers(), GameType.DEATHMATCH);
+		// TEMP
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			g.getStatsTracker().setChatColor(p, ChatColor.GREEN);
+		}
+		
+		Bukkit.getScheduler().runTaskTimer(KiwiField.getInstance(), new NoGravityUtil(), 1, 1);
 	}
 	
 	public void onDisable() {
-		//System.out.println("[KiwiField] Plugin deaktiviert");
 		Bukkit.getScheduler().cancelTasks(this);
 	}
 	

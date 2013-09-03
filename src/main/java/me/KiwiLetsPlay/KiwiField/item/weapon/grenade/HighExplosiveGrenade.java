@@ -3,7 +3,7 @@ package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.KiwiLetsPlay.KiwiField.KiwiListener;
+import me.KiwiLetsPlay.KiwiField.game.Game;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -54,7 +54,7 @@ public class HighExplosiveGrenade implements Grenade {
 	}
 	
 	@Override
-	public void explode(Item i, KiwiListener kl) {
+	public void explode(Item i) {
 		if (!(i.hasMetadata("shooter"))) return;
 		Player shooter = (Player) i.getMetadata("shooter").get(0).value();
 		Location loc = i.getLocation();
@@ -73,7 +73,7 @@ public class HighExplosiveGrenade implements Grenade {
 			if (le instanceof Player) {
 				Player p = (Player) le;
 				
-				if (kl.isSpawnProtected(p)) continue;
+				if (Game.getCurrent().isSpawnProtected(p)) continue;
 				
 				if (p.getInventory().getHelmet() != null) {
 					dmg *= 0.9;
@@ -82,7 +82,7 @@ public class HighExplosiveGrenade implements Grenade {
 					dmg *= 0.9;
 				}
 				
-				KiwiListener.getStatsUtil().registerWeaponHit(shooter, p, getName(), dmg, false);
+				Game.getCurrent().getStatsTracker().registerWeaponHit(shooter, p, getName(), dmg, false);
 			}
 			
 			le.setNoDamageTicks(0);
