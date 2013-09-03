@@ -1,4 +1,4 @@
-package me.KiwiLetsPlay.KiwiField;
+package me.KiwiLetsPlay.KiwiField.game;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
 
+import me.KiwiLetsPlay.KiwiField.FakePlayer;
 import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
 
 import org.bukkit.Bukkit;
