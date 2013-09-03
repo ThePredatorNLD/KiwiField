@@ -112,6 +112,17 @@ public class StatsUtil {
 		return kills / deaths;
 	}
 	
+	public int getMoney(Player player) {
+		Integer m = money.get(player);
+		return m == null ? 0 : m.intValue();
+	}
+	
+	public void setMoney(Player player, int amount) {
+		int m = Math.max(0, amount);
+		money.put(player.getName(), m);
+		moneyObjective.getScore(player).setScore(m);
+	}
+	
 	private FakePlayer getColorFormattedPlayer(Player p) {
 		ChatColor cc = chatColors.containsKey(p.getName()) ? chatColors.get(p.getName()) : ChatColor.WHITE;
 		String color = (cc == ChatColor.WHITE || cc == ChatColor.RESET) ? "" : cc.toString();
@@ -131,11 +142,6 @@ public class StatsUtil {
 			return deaths.get(p.getName());
 		}
 		return 0;
-	}
-	
-	private int getMoney(Player p) {
-		Integer m = money.get(p);
-		return m == null ? 0 : m.intValue();
 	}
 	
 	private void log(String type, Player p1, Player p2, String w, double d) {
