@@ -2,7 +2,7 @@ package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 
 import java.util.ArrayList;
 
-import me.KiwiLetsPlay.KiwiField.game.Game;
+import me.KiwiLetsPlay.KiwiField.KiwiField;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -58,7 +58,7 @@ public class BlindnessGrenade implements Grenade {
 			LivingEntity le = (LivingEntity) e;
 			
 			if (le instanceof Player) {
-				if (Game.getCurrent().isSpawnProtected((Player) le)) continue;
+				if (KiwiField.getCurrentGame().isSpawnProtected((Player) le)) continue;
 			}
 			
 			if (!le.hasLineOfSight(i)) {

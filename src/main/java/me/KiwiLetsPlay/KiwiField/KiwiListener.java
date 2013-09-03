@@ -76,7 +76,7 @@ public class KiwiListener implements Listener {
 		
 		ProjectileUtil.setUsingKnife(player, (MeleeWeapon) w, false, true);
 		w.playFiringSound(player);
-		Game.getCurrent().getStatsTracker().registerWeaponUsed(player, w);
+		KiwiField.getCurrentGame().getStatsTracker().registerWeaponUsed(player, w);
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
@@ -95,8 +95,8 @@ public class KiwiListener implements Listener {
 			if (w instanceof MeleeWeapon) {
 				if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
 				
-				Game.getCurrent().setSpawnProtected(player, false);
-				Game.getCurrent().getStatsTracker().registerWeaponUsed(player, w);
+				KiwiField.getCurrentGame().setSpawnProtected(player, false);
+				KiwiField.getCurrentGame().getStatsTracker().registerWeaponUsed(player, w);
 				w.playFiringSound(player);
 			} else if (w instanceof Gun) {
 				ProjectileUtil.startReloading(player);
@@ -108,7 +108,7 @@ public class KiwiListener implements Listener {
 			Weapon w = Items.getWeaponByPlayer(player);
 			if (w == null) return;
 			
-			Game.getCurrent().setSpawnProtected(player, false);
+			KiwiField.getCurrentGame().setSpawnProtected(player, false);
 			
 			if (w instanceof Gun) {
 				Gun g = (Gun) w;
@@ -117,7 +117,7 @@ public class KiwiListener implements Listener {
 				} else {
 					if (!(ProjectileUtil.isFiringWeapon(player))) {
 						if (ProjectileUtil.launchBullet(player, g)) {
-							Game.getCurrent().getStatsTracker().registerWeaponUsed(player, w);
+							KiwiField.getCurrentGame().getStatsTracker().registerWeaponUsed(player, w);
 						}
 					}
 					
@@ -129,7 +129,7 @@ public class KiwiListener implements Listener {
 				Grenade g = (Grenade) w;
 				Item i = ProjectileUtil.launchGrenade(player, g);
 				ProjectileUtil.setWeaponCooldown(player, g, true);
-				Game.getCurrent().getStatsTracker().registerWeaponUsed(player, w);
+				KiwiField.getCurrentGame().getStatsTracker().registerWeaponUsed(player, w);
 				g.playFiringSound(player);
 				
 				GrenadeExploder ge = new GrenadeExploder(g, i);
@@ -138,7 +138,7 @@ public class KiwiListener implements Listener {
 				if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
 				
 				ProjectileUtil.setUsingKnife(player, (MeleeWeapon) w, false, true);
-				Game.getCurrent().getStatsTracker().registerWeaponUsed(player, w);
+				KiwiField.getCurrentGame().getStatsTracker().registerWeaponUsed(player, w);
 				w.playFiringSound(player);
 			}
 		}
@@ -181,7 +181,7 @@ public class KiwiListener implements Listener {
 				if (hs) sb.append(ChatColor.GOLD).append("<+> ");
 				sb.append(ChatColor.RED).append(corpse.getName());
 				
-				Game.getCurrent().getStatsTracker().registerPlayerKilled(shooter, corpse, weaponname, hs);
+				KiwiField.getCurrentGame().getStatsTracker().registerPlayerKilled(shooter, corpse, weaponname, hs);
 			} else if (projectileHit.getDamager().getType() == EntityType.DROPPED_ITEM) {
 				Item item = (Item) projectileHit.getDamager();
 				Player shooter = (Player) item.getMetadata("shooter").get(0).value();
@@ -192,7 +192,7 @@ public class KiwiListener implements Listener {
 				sb.append(" [").append(weaponname).append("] ");
 				sb.append(ChatColor.RED).append(corpse.getName());
 				
-				Game.getCurrent().getStatsTracker().registerPlayerKilled(shooter, corpse, weaponname, false);
+				KiwiField.getCurrentGame().getStatsTracker().registerPlayerKilled(shooter, corpse, weaponname, false);
 			}
 			break;
 		case ENTITY_ATTACK:
@@ -209,13 +209,13 @@ public class KiwiListener implements Listener {
 			sb.append(ChatColor.WHITE).append(" [KNIFE] ");
 			sb.append(ChatColor.RED).append(victim.getName());
 			
-			Game.getCurrent().getStatsTracker().registerPlayerKilled(damager, victim, "Knife", false);
+			KiwiField.getCurrentGame().getStatsTracker().registerPlayerKilled(damager, victim, "Knife", false);
 			break;
 		default:
 			sb.append(ChatColor.RED).append(event.getEntity().getName());
 			sb.append(ChatColor.WHITE).append(" killed himself.");
 			
-			Game.getCurrent().getStatsTracker().registerPlayerKilled(event.getEntity(), event.getEntity(), "Stupidity", false);
+			KiwiField.getCurrentGame().getStatsTracker().registerPlayerKilled(event.getEntity(), event.getEntity(), "Stupidity", false);
 			break;
 		}
 		
@@ -226,7 +226,7 @@ public class KiwiListener implements Listener {
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
 		
-		Game.getCurrent().setSpawnProtected(player, true);
+		KiwiField.getCurrentGame().setSpawnProtected(player, true);
 		
 		player.closeInventory();
 		player.getInventory().clear();
@@ -234,7 +234,7 @@ public class KiwiListener implements Listener {
 		// Subject to change
 		player.getInventory().setItem(1, Items.DESERT_EAGLE.getItemStack());
 		player.getInventory().setItem(2, Items.KNIFE.getItemStack());
-		if (Game.getCurrent().hasWeaponShop()) {
+		if (KiwiField.getCurrentGame().hasWeaponShop()) {
 			player.getInventory().setItem(8, WeaponShop.getItemStack());
 		}
 		
@@ -271,7 +271,7 @@ public class KiwiListener implements Listener {
 					damage = m.getDamage();
 				}
 			} else {
-				if (entity instanceof Player && Game.getCurrent().isSpawnProtected((Player) entity)) return;
+				if (entity instanceof Player && KiwiField.getCurrentGame().isSpawnProtected((Player) entity)) return;
 				if (!(ProjectileUtil.isWeaponCooledDown(damager))) return;
 				
 				if (Math.abs(diff) < 60) {
@@ -281,7 +281,7 @@ public class KiwiListener implements Listener {
 					damage = m.getSecondaryDamage();
 				}
 				ProjectileUtil.setUsingKnife(damager, m, true, true);
-				Game.getCurrent().getStatsTracker().registerWeaponUsed(damager, w);
+				KiwiField.getCurrentGame().getStatsTracker().registerWeaponUsed(damager, w);
 				w.playFiringSound(damager);
 			}
 			
@@ -303,7 +303,7 @@ public class KiwiListener implements Listener {
 			if (event.getEntityType() == EntityType.PLAYER) {
 				Player player = (Player) event.getEntity();
 				
-				if (Game.getCurrent().isSpawnProtected(player)) {
+				if (KiwiField.getCurrentGame().isSpawnProtected(player)) {
 					event.setCancelled(true);
 					return;
 				}
@@ -342,7 +342,7 @@ public class KiwiListener implements Listener {
 		
 		if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY()
 				|| from.getBlockZ() != to.getBlockZ()) {
-			Game.getCurrent().setSpawnProtected(p, false);
+			KiwiField.getCurrentGame().setSpawnProtected(p, false);
 		}
 		
 		if (from.getX() != to.getX() || from.getZ() != to.getZ()) {
@@ -362,9 +362,9 @@ public class KiwiListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		Game.getCurrent().getStatsTracker().addPlayer(event.getPlayer());
+		KiwiField.getCurrentGame().getStatsTracker().addPlayer(event.getPlayer());
 		// TEMP
-		Game.getCurrent().getStatsTracker().setChatColor(event.getPlayer(), ChatColor.GREEN);
+		KiwiField.getCurrentGame().getStatsTracker().setChatColor(event.getPlayer(), ChatColor.GREEN);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -378,8 +378,7 @@ class TickListener implements Runnable {
 	
 	@Override
 	public void run() {
-		Game game = Game.getCurrent();
-		if (game == null) return;
+		Game game = KiwiField.getCurrentGame();
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (p.isDead()) continue;
 			Weapon w = Items.getWeaponByPlayer(p);

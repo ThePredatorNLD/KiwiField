@@ -11,8 +11,6 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Game {
 	
-	private static Game current;
-	
 	private GameType gameType;
 	private StatsUtil statsTracker;
 	
@@ -23,12 +21,6 @@ public class Game {
 		statsTracker = new StatsUtil(players, type);
 		
 		spawnProtection = new HashMap<String, Long>();
-		
-		current = this;
-	}
-	
-	public static Game getCurrent() {
-		return current;
 	}
 	
 	public StatsUtil getStatsTracker() {
