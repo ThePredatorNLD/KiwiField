@@ -56,6 +56,11 @@ public class BlindnessGrenade implements Grenade {
 		for (Entity e : i.getNearbyEntities(25, 15, 25)) {
 			if (!(e instanceof LivingEntity)) continue;
 			LivingEntity le = (LivingEntity) e;
+			
+			if (le instanceof Player) {
+				if (kl.isSpawnProtected((Player) le)) continue;
+			}
+			
 			if (!le.hasLineOfSight(i)) {
 				if (le.getLocation().distanceSquared(i.getLocation()) < 25) {
 					le.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 1));
