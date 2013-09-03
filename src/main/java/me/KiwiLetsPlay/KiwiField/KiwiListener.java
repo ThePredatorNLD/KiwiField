@@ -5,16 +5,10 @@ import java.util.HashMap;
 import me.KiwiLetsPlay.KiwiField.KiwiField;
 import me.KiwiLetsPlay.KiwiField.item.Items;
 import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
-import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.BlindnessGrenade;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.Grenade;
-import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.HighExplosiveGrenade;
-import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.SmokeGrenade;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Gun;
-import me.KiwiLetsPlay.KiwiField.item.weapon.gun.heavy.Nova;
-import me.KiwiLetsPlay.KiwiField.item.weapon.gun.pistol.DesertEagle;
-import me.KiwiLetsPlay.KiwiField.item.weapon.gun.smg.MP7;
-import me.KiwiLetsPlay.KiwiField.item.weapon.melee.Knife;
 import me.KiwiLetsPlay.KiwiField.item.weapon.melee.MeleeWeapon;
+import me.KiwiLetsPlay.KiwiField.shop.WeaponShop;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -253,13 +247,9 @@ public class KiwiListener implements Listener {
 		player.getInventory().clear();
 		
 		// Subject to change
-		player.getInventory().setItem(0, new MP7().getItemStack());
-		player.getInventory().setItem(1, new DesertEagle().getItemStack());
-		player.getInventory().setItem(2, new Knife().getItemStack());
-		player.getInventory().setItem(3, new Nova().getItemStack());
-		player.getInventory().setItem(4, new HighExplosiveGrenade().getItemStack());
-		player.getInventory().setItem(5, new SmokeGrenade().getItemStack());
-		player.getInventory().setItem(6, new BlindnessGrenade().getItemStack());
+		player.getInventory().setItem(1, Items.DESERT_EAGLE.getItemStack());
+		player.getInventory().setItem(2, Items.KNIFE.getItemStack());
+		player.getInventory().setItem(8, WeaponShop.getItemStack());
 		
 		player.getInventory().setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE, 1));
 		player.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));

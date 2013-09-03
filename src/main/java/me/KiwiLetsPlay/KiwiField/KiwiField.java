@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import me.KiwiLetsPlay.KiwiField.shop.WeaponShopListener;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -34,6 +36,7 @@ public class KiwiField extends JavaPlugin {
 	public void onEnable() {
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvents(new KiwiListener(), this);
+		pm.registerEvents(new WeaponShopListener(), this);
 		//System.out.println("[KiwiField] Plugin aktiviert");
 		
 		manager = Bukkit.getScoreboardManager();
