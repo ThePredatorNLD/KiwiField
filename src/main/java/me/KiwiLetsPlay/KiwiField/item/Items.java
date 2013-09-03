@@ -1,9 +1,11 @@
 package me.KiwiLetsPlay.KiwiField.item;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import me.KiwiLetsPlay.KiwiField.item.equipment.*;
 import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.*;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.heavy.*;
@@ -32,6 +34,10 @@ public abstract class Items {
 	// Rifles
 	
 	
+	// Equipment
+	public static final Kevlar KEVLAR_VEST = new Kevlar();
+	public static final KevlarAndHelmet KEVLAR_AND_HELMET = new KevlarAndHelmet();
+	
 	// Grenades
 	public static final HighExplosiveGrenade HIGH_EXPLOSIVE_GRENADE = new HighExplosiveGrenade();
 	public static final BlindnessGrenade BLINDNESS_GRENADE = new BlindnessGrenade();
@@ -41,27 +47,30 @@ public abstract class Items {
 	public static final Knife KNIFE = new Knife();
 	public static final GoldenKnife GOLDEN_KNIFE = new GoldenKnife();
 	
+	// Shop groups
+	public static final Buyable[] SHOP_PISTOLS = {DESERT_EAGLE};
+	public static final Buyable[] SHOP_HEAVY_WEAPONS = {NOVA};
+	public static final Buyable[] SHOP_SMGS = {MP7};
+	public static final Buyable[] SHOP_RIFLES = {};
+	public static final Buyable[] SHOP_EQUIPMENT = {KEVLAR_VEST, KEVLAR_AND_HELMET};
+	public static final Buyable[] SHOP_GRENADES = {BLINDNESS_GRENADE, HIGH_EXPLOSIVE_GRENADE, SMOKE_GRENADE};
+	
 	static {
-		// Pistols
-		addItem(DESERT_EAGLE);
-		
-		// Heavy weapons (shotguns and MGs)
-		addItem(NOVA);
-		
-		// SMGs
-		addItem(MP7);
-		
-		// Rifles
-		
-		
-		// Grenades
-		addItem(HIGH_EXPLOSIVE_GRENADE);
-		addItem(BLINDNESS_GRENADE);
-		addItem(SMOKE_GRENADE);
-		
-		// Melee
-		addItem(KNIFE);
-		addItem(GOLDEN_KNIFE);
+		for (Field f : Items.class.getDeclaredFields()) {
+			Object o;
+			try {
+				o = f.get(null);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+				continue;
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+				continue;
+			}
+			if (o instanceof Buyable) {
+				addItem((Buyable) o);
+			}
+		}
 	}
 	
 	public static Weapon getWeaponByPlayer(Player player) {
