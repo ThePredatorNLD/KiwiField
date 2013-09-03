@@ -135,14 +135,14 @@ public class StatsUtil {
 		return new FakePlayer(cc + name);
 	}
 	
-	private int getKills(Player p) {
+	public int getKills(Player p) {
 		if (kills.containsKey(p.getName())) {
 			return kills.get(p.getName());
 		}
 		return 0;
 	}
 	
-	private int getDeaths(Player p) {
+	public int getDeaths(Player p) {
 		if (deaths.containsKey(p.getName())) {
 			return deaths.get(p.getName());
 		}
