@@ -13,12 +13,13 @@ import me.KiwiLetsPlay.KiwiField.item.weapon.gun.pistol.*;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.smg.*;
 import me.KiwiLetsPlay.KiwiField.item.weapon.melee.*;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class Items {
 	
-	private static final HashMap<Integer, GameItem> ids = new HashMap<Integer, GameItem>();
+	private static final HashMap<Material, GameItem> ids = new HashMap<Material, GameItem>();
 	private static final HashMap<String, GameItem> names = new HashMap<String, GameItem>();
 	private static final List<GameItem> items = new ArrayList<GameItem>();
 	
@@ -76,14 +77,14 @@ public abstract class Items {
 	public static Weapon getWeaponByPlayer(Player player) {
 		ItemStack itemStack = player.getItemInHand();
 		if (itemStack == null) return null;
-		GameItem i = ids.get(itemStack.getTypeId());
+		GameItem i = ids.get(itemStack.getType());
 		if (!(i instanceof Weapon)) return null;
 		return (Weapon) i;
 	}
 	
 	public static GameItem getItemByItemStack(ItemStack itemStack) {
 		if (itemStack == null) return null;
-		return ids.get(itemStack.getTypeId());
+		return ids.get(itemStack.getType());
 	}
 	
 	public static GameItem getItemByName(String name) {
@@ -100,7 +101,7 @@ public abstract class Items {
 	}
 	
 	private static void addItem(GameItem i) {
-		ids.put(i.getItemStack().getTypeId(), i);
+		ids.put(i.getItemStack().getType(), i);
 		names.put(i.getName(), i);
 		items.add(i);
 	}
