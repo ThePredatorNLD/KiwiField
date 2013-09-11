@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import me.KiwiLetsPlay.KiwiField.KiwiField;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.util.FireworkEffectPlayer;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -71,6 +71,16 @@ public class SmokeGrenade implements Grenade {
 	@Override
 	public int getTimesBuyable() {
 		return 1;
+	}
+	
+	@Override
+	public int getKillReward() {
+		return 0;
+	}
+	
+	@Override
+	public int getInventorySlot() {
+		return 3;
 	}
 }
 

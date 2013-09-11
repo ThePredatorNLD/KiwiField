@@ -106,4 +106,14 @@ public class Nova implements Shotgun, SingleLoader {
 	public int getPrice() {
 		return 1200;
 	}
+	
+	@Override
+	public int getKillReward() {
+		return 900;
+	}
+	
+	@Override
+	public int getInventorySlot() {
+		return 0;
+	}
 }

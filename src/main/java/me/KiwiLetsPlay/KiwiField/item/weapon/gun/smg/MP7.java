@@ -91,4 +91,14 @@ public class MP7 implements Gun {
 	public int getPrice() {
 		return 1700;
 	}
+	
+	@Override
+	public int getKillReward() {
+		return 600;
+	}
+	
+	@Override
+	public int getInventorySlot() {
+		return 0;
+	}
 }

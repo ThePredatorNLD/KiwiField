@@ -92,4 +92,14 @@ public class DesertEagle implements Gun {
 	public int getPrice() {
 		return 800;
 	}
+	
+	@Override
+	public int getKillReward() {
+		return 300;
+	}
+	
+	@Override
+	public int getInventorySlot() {
+		return 1;
+	}
 }

@@ -11,4 +11,8 @@ public interface Weapon extends GameItem {
 	public int getFiringCooldown();
 	
 	public void playFiringSound(Player p);
+	
+	public int getKillReward();
+	
+	public int getInventorySlot();
 }

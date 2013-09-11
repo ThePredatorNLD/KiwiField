@@ -99,4 +99,14 @@ public class BlindnessGrenade implements Grenade {
 	public int getTimesBuyable() {
 		return 2;
 	}
+	
+	@Override
+	public int getKillReward() {
+		return 0;
+	}
+	
+	@Override
+	public int getInventorySlot() {
+		return 3;
+	}
 }

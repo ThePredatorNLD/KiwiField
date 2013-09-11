@@ -122,4 +122,14 @@ public class HighExplosiveGrenade implements Grenade {
 	public int getTimesBuyable() {
 		return 1;
 	}
+	
+	@Override
+	public int getKillReward() {
+		return 200;
+	}
+	
+	@Override
+	public int getInventorySlot() {
+		return 3;
+	}
 }

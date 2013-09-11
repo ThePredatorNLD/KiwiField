@@ -61,4 +61,14 @@ public class Knife implements MeleeWeapon {
 	public double getAttackRange() {
 		return 1.5;
 	}
+	
+	@Override
+	public int getKillReward() {
+		return 1500;
+	}
+	
+	@Override
+	public int getInventorySlot() {
+		return 2;
+	}
 }
