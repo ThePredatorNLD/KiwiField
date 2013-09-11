@@ -14,10 +14,15 @@
       <id>bukkit-repo</id>
       <url>http://repo.bukkit.org/content/groups/public</url>
     </repository>
-  <repository>
-    <id>comphenix-rep</id>
-    <url>http://repo.comphenix.net/content/groups/public</url>
-  </repository>    <repository>
+    <repository>
+      <id>comphenix-jenkins-repo</id>
+      <url>http://assets.comphenix.net/jenkins/job/PacketWrapper/28/maven-repository/repository/</url>
+    </repository>
+    <repository>
+      <id>comphenix-repo</id>
+      <url>http://repo.comphenix.net/content/groups/public</url>
+    </repository>
+    <repository>
       <id>stutz-repo</id>
       <url>http://repo.stutzfam.ch/content/groups/public</url>
     </repository>
@@ -25,14 +30,19 @@
 
   <dependencies>
     <dependency>
-    	<groupId>org.bukkit</groupId>
-    	<artifactId>bukkit</artifactId>
-    	<version>1.6.2-R1.0</version>
+        <groupId>org.bukkit</groupId>
+        <artifactId>bukkit</artifactId>
+        <version>1.6.2-R1.0</version>
     </dependency>
     <dependency>
-    	<groupId>com.comphenix.protocol</groupId>
-    	<artifactId>ProtocolLib</artifactId>
-    	<version>2.7.0</version>
+        <groupId>com.comphenix.protocol</groupId>
+        <artifactId>ProtocolLib</artifactId>
+        <version>2.7.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.comphenix.packetwrapper</groupId>
+        <artifactId>PacketWrapper</artifactId>
+        <version>1.6.1-R0.1</version>
     </dependency>
   </dependencies>
 

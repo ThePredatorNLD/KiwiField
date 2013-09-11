@@ -3,13 +3,9 @@ package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 import java.util.ArrayList;
 
 import me.KiwiLetsPlay.KiwiField.KiwiField;
-import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.util.FireworkEffectPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -17,6 +13,11 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.Vector;
+
+import com.comphenix.packetwrapper.Packet3FParticle;
+import com.comphenix.packetwrapper.Packet3FParticle.ParticleEffect;
+import com.comphenix.protocol.ProtocolLibrary;
 
 public class SmokeGrenade implements Grenade {
 	
@@ -100,13 +101,10 @@ class AreaSmoker implements Runnable {
 			Location l2 = l.clone();
 			l2.add(Math.random() * 3d - 1.5, Math.random() * 2d + 0.5d, Math.random() * 3d - 1.5);
 			Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), this, 3);
-			FireworkEffectPlayer fep = new FireworkEffectPlayer();
-			FireworkEffect fe = FireworkEffect.builder().trail(true).with(Type.BALL_LARGE).withColor(Color.BLACK).build();
-			try {
-				fep.playFirework(l2.getWorld(), l2, fe);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			
+			Vector offset = new Vector(1.8, 1.0, 1.8);
+			Packet3FParticle particlePacket = new Packet3FParticle(ParticleEffect.HUGE_EXPLOSION, 5, l, offset);
+			ProtocolLibrary.getProtocolManager().broadcastServerPacket(particlePacket.getHandle());
 		}
 	}
 }
