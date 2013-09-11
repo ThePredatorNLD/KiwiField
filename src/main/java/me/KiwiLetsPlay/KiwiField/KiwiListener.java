@@ -9,14 +9,12 @@ import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.Grenade;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Gun;
 import me.KiwiLetsPlay.KiwiField.item.weapon.melee.MeleeWeapon;
-import me.KiwiLetsPlay.KiwiField.shop.WeaponShop;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -181,6 +179,7 @@ public class KiwiListener implements Listener {
 				if (hs) sb.append(ChatColor.GOLD).append("<+> ");
 				sb.append(ChatColor.RED).append(corpse.getName());
 				
+				KiwiField.getCurrentGame().getHandler().onPlayerKilled(shooter, corpse, (Weapon) Items.getItemByName(weaponname));
 				KiwiField.getCurrentGame().getStatsTracker().registerPlayerKilled(shooter, corpse, weaponname, hs);
 			} else if (projectileHit.getDamager().getType() == EntityType.DROPPED_ITEM) {
 				Item item = (Item) projectileHit.getDamager();
@@ -192,6 +191,7 @@ public class KiwiListener implements Listener {
 				sb.append(" [").append(weaponname).append("] ");
 				sb.append(ChatColor.RED).append(corpse.getName());
 				
+				KiwiField.getCurrentGame().getHandler().onPlayerKilled(shooter, corpse, (Weapon) Items.getItemByName(weaponname));
 				KiwiField.getCurrentGame().getStatsTracker().registerPlayerKilled(shooter, corpse, weaponname, false);
 			}
 			break;
@@ -205,16 +205,29 @@ public class KiwiListener implements Listener {
 			Player damager = (Player) entityDamage.getDamager();
 			Player victim = event.getEntity();
 			
+			ItemStack is = damager.getItemInHand();
+			
 			sb.append(ChatColor.GREEN).append(damager.getName());
-			sb.append(ChatColor.WHITE).append(" [KNIFE] ");
+			if (is.getDurability() == 0) {
+				sb.append(ChatColor.WHITE).append(" [KNIFE] ");
+			} else {
+				sb.append(ChatColor.WHITE).append(" [GOLDEN KNIFE] ");
+			}
 			sb.append(ChatColor.RED).append(victim.getName());
 			
-			KiwiField.getCurrentGame().getStatsTracker().registerPlayerKilled(damager, victim, "Knife", false);
+			if (is.getDurability() == 0) {
+				KiwiField.getCurrentGame().getHandler().onPlayerKilled(damager, victim, Items.KNIFE);
+				KiwiField.getCurrentGame().getStatsTracker().registerPlayerKilled(damager, victim, "Knife", false);
+			} else {
+				KiwiField.getCurrentGame().getHandler().onPlayerKilled(damager, victim, Items.GOLDEN_KNIFE);
+				KiwiField.getCurrentGame().getStatsTracker().registerPlayerKilled(damager, victim, "Golden Knife", false);
+			}
 			break;
 		default:
 			sb.append(ChatColor.RED).append(event.getEntity().getName());
 			sb.append(ChatColor.WHITE).append(" killed himself.");
 			
+			KiwiField.getCurrentGame().getHandler().onPlayerKilled(event.getEntity(), event.getEntity(), null);
 			KiwiField.getCurrentGame().getStatsTracker().registerPlayerKilled(event.getEntity(), event.getEntity(), "Stupidity", false);
 			break;
 		}
@@ -226,22 +239,9 @@ public class KiwiListener implements Listener {
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
 		
-		KiwiField.getCurrentGame().setSpawnProtected(player, true);
-		
 		player.closeInventory();
-		player.getInventory().clear();
-		
-		// Subject to change
-		player.getInventory().setItem(1, Items.DESERT_EAGLE.getItemStack());
-		player.getInventory().setItem(2, Items.KNIFE.getItemStack());
-		if (KiwiField.getCurrentGame().hasWeaponShop()) {
-			player.getInventory().setItem(8, WeaponShop.getItemStack());
-		}
-		
-		player.getInventory().setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE, 1));
-		player.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));
-		
-		player.getInventory().setHeldItemSlot(1);
+		KiwiField.getCurrentGame().getHandler().onPlayerRespawn(player);
+		ProjectileUtil.switchWeapon(event.getPlayer(), player.getItemInHand());
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -325,7 +325,7 @@ public class KiwiListener implements Listener {
 			entity.setNoDamageTicks(0);
 			if (entity.getHealth() <= damage) {
 				if (entity != proj.getShooter()) {
-					entity.damage(0, proj.getShooter());
+					entity.damage(0d, proj.getShooter());
 					entity.setNoDamageTicks(0);
 				}
 				entity.setLastDamageCause(event);

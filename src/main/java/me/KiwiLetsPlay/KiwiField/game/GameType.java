@@ -16,6 +16,8 @@ public enum GameType {
 	
 	private GameType(boolean friendlyFire, boolean weaponShop, boolean moneySystem) {
 		this.friendlyFire = friendlyFire;
+		this.weaponShop = weaponShop;
+		this.moneySystem = moneySystem;
 	}
 	
 	public boolean isFriendlyFireEnabled() {

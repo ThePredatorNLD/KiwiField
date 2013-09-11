@@ -46,13 +46,13 @@ public class StatsUtil {
 		invisibilityTeam = board.registerNewTeam("invisibility");
 		invisibilityTeam.setCanSeeFriendlyInvisibles(true);
 		
-		invisibilityTeam.setAllowFriendlyFire(type.isFriendlyFireEnabled());
+		//invisibilityTeam.setAllowFriendlyFire(type.isFriendlyFireEnabled());
 		killsObjective = board.registerNewObjective("kills", "dummy");
 		killsObjective.setDisplayName(ChatColor.GREEN + "Kills");
 		killsObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		
 		moneyObjective = board.registerNewObjective("money", "dummy");
-			if (type.hasMoneySystem()) {
+		if (type.hasMoneySystem()) {
 			moneyObjective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 		}
 		

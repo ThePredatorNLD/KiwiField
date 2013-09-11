@@ -51,6 +51,10 @@ public class WeaponShopListener implements Listener {
 		
 		Buyable b = (Buyable) Items.getItemByItemStack(e.getCurrentItem());
 		if (b == null) return;
+		if (!(KiwiField.getCurrentGame().getHandler().allowPlayerBuyItem(p, b))) {
+			p.sendMessage("Disabled in this game mode.");
+			return;
+		}
 		
 		int money = KiwiField.getCurrentGame().getStatsTracker().getMoney(p);
 		if (KiwiField.getCurrentGame().hasMoneySystem() && money < b.getPrice()) {
@@ -77,24 +81,20 @@ public class WeaponShopListener implements Listener {
 				if (i == 6) return;
 			}
 		} else if (b instanceof Gun) {
-			if (p.getInventory().contains(is.getTypeId())) {
+			if (p.getInventory().contains(is.getType())) {
 				p.sendMessage("You already own this weapon!");
 				return;
 			}
-			int mod = e.getSlot() % 9;
-			if (mod == 0) { // Pistol
-				clearItemSlot(p, 1);
-				p.getInventory().setItem(1, is);
-				p.getInventory().setHeldItemSlot(1);
-			} else if (mod == 4) { // Equipment --> Zeus
+			int slot = ((Gun) b).getInventorySlot();
+			if (slot < 2) { // Primary or secondary
+				clearItemSlot(p, slot);
+				p.getInventory().setItem(slot, is);
+				p.getInventory().setHeldItemSlot(slot);
+			} else { // Melee
 				p.getInventory().setItem(2, is);
-			} else {
-				clearItemSlot(p, 0);
-				p.getInventory().setItem(0, is);
-				p.getInventory().setHeldItemSlot(0);
 			}
 		} else if (b instanceof Equipment) {
-			GameType gt = KiwiField.getCurrentGame().getType();
+			GameType gt = KiwiField.getCurrentGame().getType(); // TODO: Outsource to GameHandler
 			if (gt != GameType.CLASSICAL_BOMB_DEFUSAL && gt != GameType.CLASSICAL_HOSTAGE_RESCUE) {
 				p.sendMessage("Disabled in this game mode.");
 				return;

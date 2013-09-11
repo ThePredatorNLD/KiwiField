@@ -88,7 +88,7 @@ public class HighExplosiveGrenade implements Grenade {
 			le.setNoDamageTicks(0);
 			if (le.getHealth() <= dmg) {
 				if (le != shooter) {
-					le.damage(0, shooter);
+					le.damage(0d, shooter);
 					le.setNoDamageTicks(0);
 				}
 				EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(i, le, DamageCause.PROJECTILE, dmg);
