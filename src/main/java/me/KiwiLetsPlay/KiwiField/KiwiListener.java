@@ -166,11 +166,16 @@ public class KiwiListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		if (event.getPlayer().getGameMode() == GameMode.SURVIVAL) {
-			if (!(KiwiField.getCurrentGame().hasMoneySystem())) {
-				Weapon w = Items.getWeaponByPlayer(event.getPlayer());
-				if (!(w instanceof Gun)) { // TODO: Enable dropping C4s
-					event.setCancelled(true);
+		event.setCancelled(true);
+		Player p = event.getPlayer();
+		if (p.getGameMode() == GameMode.SURVIVAL) {
+			if (KiwiField.getCurrentGame().hasMoneySystem()) {
+				Weapon w = Items.getWeaponByPlayer(p);
+				if (w instanceof Gun) { // TODO: Enable dropping C4s
+					ItemStack is = p.getItemInHand();
+					is.setAmount(1);
+					p.getWorld().dropItemNaturally(event.getPlayer().getLocation(), is);
+					p.getInventory().clear(p.getInventory().getHeldItemSlot());
 				}
 			}
 		}
