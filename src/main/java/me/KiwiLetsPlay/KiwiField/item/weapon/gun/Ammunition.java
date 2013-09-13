@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import me.KiwiLetsPlay.KiwiField.KiwiField;
 import me.KiwiLetsPlay.KiwiField.item.Items;
 
 import org.bukkit.entity.Player;
@@ -39,7 +40,6 @@ public class Ammunition {
 	
 	public boolean shoot() {
 		if (primary > 0) {
-			// TODO: Set durability
 			setItemMeta(itemStack, primary - 1, secondary);
 			return true;
 		}
@@ -52,10 +52,15 @@ public class Ammunition {
 		if (g instanceof SingleLoader) {
 			loadable = Math.min(loadable, 1);
 		}
-		p.setLevel(secondary - loadable);
-		setItemMeta(itemStack, primary + loadable, secondary - loadable);
+		
+		int newSecondary = secondary;
+		if (KiwiField.getCurrentGame().getType().useSecondaryAmmo()) {
+			newSecondary -= loadable;
+		}
+		
+		p.setLevel(newSecondary);
+		setItemMeta(itemStack, primary + loadable, newSecondary);
 		p.setItemInHand(itemStack);
-		// TODO: Set durability
 	}
 	
 	public int getReloadableAmmo() {
