@@ -30,25 +30,25 @@
 
   <dependencies>
     <dependency>
-        <groupId>org.bukkit</groupId>
-        <artifactId>bukkit</artifactId>
-        <version>1.6.2-R1.0</version>
+      <groupId>org.bukkit</groupId>
+      <artifactId>bukkit</artifactId>
+      <version>1.6.2-R1.0</version>
     </dependency>
     <dependency>
-        <groupId>com.comphenix.protocol</groupId>
-        <artifactId>ProtocolLib</artifactId>
-        <version>2.7.0</version>
+      <groupId>com.comphenix.protocol</groupId>
+      <artifactId>ProtocolLib</artifactId>
+      <version>2.7.0</version>
     </dependency>
     <dependency>
-        <groupId>com.comphenix.packetwrapper</groupId>
-        <artifactId>PacketWrapper</artifactId>
-        <version>1.6.1-R0.1</version>
+      <groupId>com.comphenix.packetwrapper</groupId>
+      <artifactId>PacketWrapper</artifactId>
+      <version>1.6.1-R0.1</version>
     </dependency>
   </dependencies>
 
   <build>
     <finalName>KiwiField</finalName>
-    
+
     <resources>
       <resource>
         <targetPath>.</targetPath>
@@ -59,7 +59,7 @@
         </includes>
       </resource>
     </resources>
-    
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -70,7 +70,7 @@
           <target>1.6</target>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -81,6 +81,28 @@
           <suppressionsFileExpression>config/checkstyle-suppressions.xml</suppressionsFileExpression>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>com.comphenix.packetwrapper:PacketWrapper</include>
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 </project>
