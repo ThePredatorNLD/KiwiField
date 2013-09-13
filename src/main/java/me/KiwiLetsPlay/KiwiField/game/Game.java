@@ -12,6 +12,7 @@ import me.KiwiLetsPlay.KiwiField.game.handler.HandlerFreeForAll;
 import me.KiwiLetsPlay.KiwiField.game.handler.HandlerHostageRescue;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -70,6 +71,10 @@ public class Game {
 	
 	public StatsUtil getStatsTracker() {
 		return statsTracker;
+	}
+	
+	public World getCurrentWorld() {
+		return Bukkit.getWorlds().get(0); // Temp
 	}
 	
 	public boolean isFriendlyFireEnabled() {

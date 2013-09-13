@@ -37,6 +37,7 @@ public class KiwiField extends JavaPlugin {
 	public void onEnable() {
 		// Subject to change
 		game = new Game(Bukkit.getOnlinePlayers(), GameType.DEATHMATCH);
+		
 		// TEMP
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			game.getStatsTracker().setChatColor(p, ChatColor.GREEN);
@@ -60,7 +61,7 @@ public class KiwiField extends JavaPlugin {
 		HandlerList.unregisterAll(this);
 		
 		// Clean up map
-		World w = Bukkit.getWorlds().get(0);
+		World w = game.getCurrentWorld();
 		for (Entity e : w.getEntitiesByClasses(Projectile.class, Animals.class, Monster.class)) {
 			e.remove();
 		}
