@@ -1,16 +1,12 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon.gun.heavy;
 
-import java.util.ArrayList;
-
-import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Ammunition;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.SingleLoader;
+import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class Nova implements Shotgun, SingleLoader {
 	
@@ -21,15 +17,7 @@ public class Nova implements Shotgun, SingleLoader {
 	
 	@Override
 	public ItemStack getItemStack() {
-		ItemStack is = new ItemStack(Material.GLOWSTONE_DUST, 1);
-		ItemMeta im = is.getItemMeta();
-		im.setDisplayName(getName());
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "Shotgun");
-		im.setLore(lore);
-		is.setItemMeta(im);
-		Ammunition.setItemMeta(is, getAmmoCapacity(), getBackupAmmoCapacity());
-		return is;
+		return ItemFactory.setAmmo(ItemFactory.getItem(Material.GLOWSTONE_DUST, getName(), "Shotgun"), this);
 	}
 	
 	@Override

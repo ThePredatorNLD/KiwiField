@@ -1,16 +1,12 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon.gun.smg;
 
-import java.util.ArrayList;
-
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Ammunition;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Gun;
+import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
 
 public class MP7 implements Gun {
 	
@@ -21,15 +17,7 @@ public class MP7 implements Gun {
 	
 	@Override
 	public ItemStack getItemStack() {
-		ItemStack is = new ItemStack(Material.SLIME_BALL, 1);
-		ItemMeta im = is.getItemMeta();
-		im.setDisplayName(getName());
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "SMG");
-		im.setLore(lore);
-		is.setItemMeta(im);
-		Ammunition.setItemMeta(is, getAmmoCapacity(), getBackupAmmoCapacity());
-		return is;
+		return ItemFactory.getItem(Material.SLIME_BALL, getName(), "SMG");
 	}
 	
 	@Override

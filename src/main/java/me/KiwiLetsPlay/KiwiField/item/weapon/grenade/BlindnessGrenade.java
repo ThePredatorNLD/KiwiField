@@ -1,10 +1,8 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 
-import java.util.ArrayList;
-
 import me.KiwiLetsPlay.KiwiField.KiwiField;
+import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -12,7 +10,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -26,14 +23,7 @@ public class BlindnessGrenade implements Grenade {
 	
 	@Override
 	public ItemStack getItemStack() {
-		ItemStack is = new ItemStack(Material.BLAZE_ROD, 1);
-		ItemMeta im = is.getItemMeta();
-		im.setDisplayName(getName());
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "Grenade");
-		im.setLore(lore);
-		is.setItemMeta(im);
-		return is;
+		return ItemFactory.getItem(Material.BLAZE_ROD, getName(), "Grenade");
 	}
 	
 	@Override

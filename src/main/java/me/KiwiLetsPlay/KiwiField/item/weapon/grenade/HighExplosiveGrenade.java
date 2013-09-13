@@ -1,11 +1,10 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.KiwiLetsPlay.KiwiField.KiwiField;
+import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class HighExplosiveGrenade implements Grenade {
 	
@@ -28,14 +26,7 @@ public class HighExplosiveGrenade implements Grenade {
 	
 	@Override
 	public ItemStack getItemStack() {
-		ItemStack is = new ItemStack(Material.CLAY_BALL, 1);
-		ItemMeta im = is.getItemMeta();
-		im.setDisplayName(getName());
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "Grenade");
-		im.setLore(lore);
-		is.setItemMeta(im);
-		return is;
+		return ItemFactory.getItem(Material.CLAY_BALL, getName(), "Grenade");
 	}
 	
 	@Override

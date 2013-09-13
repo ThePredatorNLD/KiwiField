@@ -1,16 +1,12 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon.gun.pistol;
 
-import java.util.ArrayList;
-
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Ammunition;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Gun;
+import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
 
 public class DesertEagle implements Gun {
 	
@@ -21,15 +17,7 @@ public class DesertEagle implements Gun {
 	
 	@Override
 	public ItemStack getItemStack() {
-		ItemStack is = new ItemStack(Material.FLINT, 1);
-		ItemMeta im = is.getItemMeta();
-		im.setDisplayName("Desert Eagle");
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "Pistol");
-		im.setLore(lore);
-		is.setItemMeta(im);
-		Ammunition.setItemMeta(is, getAmmoCapacity(), getBackupAmmoCapacity());
-		return is;
+		return ItemFactory.setAmmo(ItemFactory.getItem(Material.FLINT, "Desert Eagle", "Pistol"), this);
 	}
 	
 	@Override

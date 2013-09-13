@@ -1,10 +1,11 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon.melee;
 
+import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class Knife implements MeleeWeapon {
 	
@@ -15,11 +16,7 @@ public class Knife implements MeleeWeapon {
 	
 	@Override
 	public ItemStack getItemStack() {
-		ItemStack is = new ItemStack(Material.COAL, 1);
-		ItemMeta im = is.getItemMeta();
-		im.setDisplayName(getName());
-		is.setItemMeta(im);
-		return is;
+		return ItemFactory.getItem(Material.COAL, getName(), "Melee Weapon");
 	}
 	
 	@Override

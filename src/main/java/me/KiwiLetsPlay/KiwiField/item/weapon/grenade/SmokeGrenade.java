@@ -1,18 +1,15 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 
-import java.util.ArrayList;
-
 import me.KiwiLetsPlay.KiwiField.KiwiField;
+import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import com.comphenix.packetwrapper.Packet3FParticle;
@@ -28,14 +25,7 @@ public class SmokeGrenade implements Grenade {
 	
 	@Override
 	public ItemStack getItemStack() {
-		ItemStack is = new ItemStack(Material.STICK, 1);
-		ItemMeta im = is.getItemMeta();
-		im.setDisplayName(getName());
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "Grenade");
-		im.setLore(lore);
-		is.setItemMeta(im);
-		return is;
+		return ItemFactory.getItem(Material.STICK, getName(), "Grenade");
 	}
 	
 	@Override

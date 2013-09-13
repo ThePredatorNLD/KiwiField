@@ -1,10 +1,8 @@
 package me.KiwiLetsPlay.KiwiField.item.equipment;
 
-import java.util.ArrayList;
-
 import me.KiwiLetsPlay.KiwiField.item.Items;
+import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,14 +17,7 @@ public class KevlarAndHelmet implements Equipment {
 	
 	@Override
 	public ItemStack getItemStack() {
-		ItemStack is = new ItemStack(Material.LEATHER_HELMET, 1);
-		ItemMeta im = is.getItemMeta();
-		im.setDisplayName(getName());
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.RESET.toString() + ChatColor.BOLD.toString() + "Equipment");
-		im.setLore(lore);
-		is.setItemMeta(im);
-		return is;
+		return ItemFactory.getItem(Material.LEATHER_HELMET, "Helmet", "Equipment");
 	}
 	
 	@Override
