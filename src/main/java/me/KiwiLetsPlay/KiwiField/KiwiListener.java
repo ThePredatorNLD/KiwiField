@@ -4,9 +4,11 @@ import java.util.HashMap;
 
 import me.KiwiLetsPlay.KiwiField.KiwiField;
 import me.KiwiLetsPlay.KiwiField.game.Game;
+import me.KiwiLetsPlay.KiwiField.item.GameItem;
 import me.KiwiLetsPlay.KiwiField.item.Items;
 import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.Grenade;
+import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Ammunition;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Gun;
 import me.KiwiLetsPlay.KiwiField.item.weapon.melee.MeleeWeapon;
 
@@ -28,6 +30,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -145,11 +148,37 @@ public class KiwiListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerPickUp(PlayerPickupItemEvent event) {
 		event.setCancelled(true);
+		
+		ItemStack is = event.getItem().getItemStack();
+		GameItem i = Items.getItemByItemStack(is);
+		if (!(i instanceof Gun)) return;
+		Weapon w = (Weapon) i;
+		
+		if (event.getPlayer().getInventory().getItem(w.getInventorySlot()) != null) return;
+		
+		Ammunition a = Ammunition.fromItemStack(is);
+		if (a == null) return;
+		
+		Ammunition.setItemMeta(is, a.getPrimaryAmmo(), a.getBackupAmmo());
+		event.getPlayer().getInventory().setItem(w.getInventorySlot(), is);
+		event.getItem().remove();
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		if (event.getPlayer().getGameMode() == GameMode.SURVIVAL) {
+			if (!(KiwiField.getCurrentGame().hasMoneySystem())) {
+				Weapon w = Items.getWeaponByPlayer(event.getPlayer());
+				if (!(w instanceof Gun)) { // TODO: Enable dropping C4s
+					event.setCancelled(true);
+				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onInventoryClick(InventoryClickEvent event) {
+		if (event.getWhoClicked().getGameMode() == GameMode.SURVIVAL) {
 			event.setCancelled(true);
 		}
 	}
