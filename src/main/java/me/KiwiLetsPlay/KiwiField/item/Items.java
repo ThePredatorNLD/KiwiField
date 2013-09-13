@@ -1,9 +1,7 @@
 package me.KiwiLetsPlay.KiwiField.item;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import me.KiwiLetsPlay.KiwiField.item.equipment.*;
 import me.KiwiLetsPlay.KiwiField.item.weapon.Weapon;
@@ -17,11 +15,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class Items {
+public final class Items {
 	
 	private static final HashMap<Material, GameItem> ids = new HashMap<Material, GameItem>();
 	private static final HashMap<String, GameItem> names = new HashMap<String, GameItem>();
-	private static final List<GameItem> items = new ArrayList<GameItem>();
 	
 	// Pistols
 	public static final DesertEagle DESERT_EAGLE = new DesertEagle();
@@ -74,6 +71,8 @@ public abstract class Items {
 		}
 	}
 	
+	private Items() {}
+	
 	public static Weapon getWeaponByPlayer(Player player) {
 		ItemStack itemStack = player.getItemInHand();
 		if (itemStack == null) return null;
@@ -96,13 +95,8 @@ public abstract class Items {
 		return ids.get(typeID);
 	}
 	
-	public static Weapon[] getWeapons() {
-		return items.toArray(new Weapon[0]);
-	}
-	
 	private static void addItem(GameItem i) {
 		ids.put(i.getItemStack().getType(), i);
 		names.put(i.getName(), i);
-		items.add(i);
 	}
 }

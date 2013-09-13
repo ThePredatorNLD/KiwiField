@@ -1,6 +1,7 @@
 package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 
 import me.KiwiLetsPlay.KiwiField.KiwiField;
+import me.KiwiLetsPlay.KiwiField.item.ItemType;
 import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
 
 import org.bukkit.Material;
@@ -16,19 +17,26 @@ import org.bukkit.util.Vector;
 
 public class BlindnessGrenade implements Grenade {
 	
+	// GameItem
 	@Override
 	public String getName() {
 		return "Blindness Grenade";
 	}
 	
 	@Override
-	public ItemStack getItemStack() {
-		return ItemFactory.getItem(Material.BLAZE_ROD, getName(), "Grenade");
+	public ItemType getType() {
+		return ItemType.GRENADE;
 	}
 	
 	@Override
+	public ItemStack getItemStack() {
+		return ItemFactory.getItem(this, Material.BLAZE_ROD);
+	}
+	
+	// Weapon
+	@Override
 	public double getDamage() {
-		return 0;
+		return 0.0;
 	}
 	
 	@Override
@@ -41,6 +49,23 @@ public class BlindnessGrenade implements Grenade {
 		p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1f, 1f);
 	}
 	
+	@Override
+	public int getKillReward() {
+		return 0;
+	}
+	
+	@Override
+	public int getInventorySlot() {
+		return 3;
+	}
+	
+	// Buyable
+	@Override
+	public int getPrice() {
+		return 200;
+	}
+	
+	// Grenade
 	@Override
 	public void explode(Item i) {
 		for (Entity e : i.getNearbyEntities(25, 15, 25)) {
@@ -81,22 +106,7 @@ public class BlindnessGrenade implements Grenade {
 	}
 	
 	@Override
-	public int getPrice() {
-		return 200;
-	}
-	
-	@Override
 	public int getTimesBuyable() {
 		return 2;
-	}
-	
-	@Override
-	public int getKillReward() {
-		return 0;
-	}
-	
-	@Override
-	public int getInventorySlot() {
-		return 3;
 	}
 }

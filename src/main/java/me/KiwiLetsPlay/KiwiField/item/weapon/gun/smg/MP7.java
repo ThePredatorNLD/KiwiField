@@ -5,24 +5,32 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.KiwiLetsPlay.KiwiField.item.ItemType;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Gun;
 import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
 
 public class MP7 implements Gun {
 	
+	// GameItem
 	@Override
 	public String getName() {
 		return "MP7";
 	}
 	
 	@Override
-	public ItemStack getItemStack() {
-		return ItemFactory.getItem(Material.SLIME_BALL, getName(), "SMG");
+	public ItemType getType() {
+		return ItemType.SMG;
 	}
 	
 	@Override
+	public ItemStack getItemStack() {
+		return ItemFactory.getItem(this, Material.SLIME_BALL);
+	}
+	
+	// Weapon
+	@Override
 	public double getDamage() {
-		return 5;
+		return 5.0;
 	}
 	
 	@Override
@@ -36,6 +44,23 @@ public class MP7 implements Gun {
 	}
 	
 	@Override
+	public int getKillReward() {
+		return 600;
+	}
+	
+	@Override
+	public int getInventorySlot() {
+		return 0;
+	}
+	
+	// Buyable
+	@Override
+	public int getPrice() {
+		return 1700;
+	}
+	
+	// Gun
+	@Override
 	public int getAmmoCapacity() {
 		return 30;
 	}
@@ -47,7 +72,7 @@ public class MP7 implements Gun {
 	
 	@Override
 	public double getBaseRecoil() {
-		return 6;
+		return 6.0;
 	}
 	
 	@Override
@@ -57,7 +82,7 @@ public class MP7 implements Gun {
 	
 	@Override
 	public double getBulletSpeed() {
-		return 10;
+		return 10.0;
 	}
 	
 	@Override
@@ -73,20 +98,5 @@ public class MP7 implements Gun {
 	@Override
 	public boolean isArmorPiercing() {
 		return false;
-	}
-	
-	@Override
-	public int getPrice() {
-		return 1700;
-	}
-	
-	@Override
-	public int getKillReward() {
-		return 600;
-	}
-	
-	@Override
-	public int getInventorySlot() {
-		return 0;
 	}
 }

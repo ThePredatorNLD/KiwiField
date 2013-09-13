@@ -114,7 +114,7 @@ public class StatsUtil {
 		int kills = getKills(p);
 		int deaths = getDeaths(p);
 		if (deaths == 0) deaths = 1;
-		return kills / deaths;
+		return ((double) kills) / ((double) deaths);
 	}
 	
 	public int getMoney(Player player) {

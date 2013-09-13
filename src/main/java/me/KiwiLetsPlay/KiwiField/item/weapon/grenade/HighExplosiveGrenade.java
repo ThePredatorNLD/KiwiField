@@ -3,6 +3,7 @@ package me.KiwiLetsPlay.KiwiField.item.weapon.grenade;
 import java.util.List;
 
 import me.KiwiLetsPlay.KiwiField.KiwiField;
+import me.KiwiLetsPlay.KiwiField.item.ItemType;
 import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
 
 import org.bukkit.Effect;
@@ -19,19 +20,26 @@ import org.bukkit.inventory.ItemStack;
 
 public class HighExplosiveGrenade implements Grenade {
 	
+	// GameItem
 	@Override
 	public String getName() {
 		return "HE-Grenade";
 	}
 	
 	@Override
-	public ItemStack getItemStack() {
-		return ItemFactory.getItem(Material.CLAY_BALL, getName(), "Grenade");
+	public ItemType getType() {
+		return ItemType.GRENADE;
 	}
 	
 	@Override
+	public ItemStack getItemStack() {
+		return ItemFactory.getItem(this, Material.CLAY_BALL);
+	}
+	
+	// Weapon
+	@Override
 	public double getDamage() {
-		return 100;
+		return 100.0;
 	}
 	
 	@Override
@@ -44,6 +52,23 @@ public class HighExplosiveGrenade implements Grenade {
 		p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1f, 1f);
 	}
 	
+	@Override
+	public int getKillReward() {
+		return 200;
+	}
+	
+	@Override
+	public int getInventorySlot() {
+		return 3;
+	}
+	
+	// Buyable
+	@Override
+	public int getPrice() {
+		return 300;
+	}
+	
+	// Grenade
 	@Override
 	public void explode(Item i) {
 		if (!(i.hasMetadata("shooter"))) return;
@@ -95,18 +120,9 @@ public class HighExplosiveGrenade implements Grenade {
 		}
 	}
 	
-	private void explosionEffect(Location loc, double x, double y, double z) {
-		loc.getWorld().createExplosion(loc.getX() + x, loc.getY() + y, loc.getZ() + z, 0, false, false);
-	}
-	
 	@Override
 	public int getFuseLenght() {
 		return 40;
-	}
-	
-	@Override
-	public int getPrice() {
-		return 300;
 	}
 	
 	@Override
@@ -114,13 +130,7 @@ public class HighExplosiveGrenade implements Grenade {
 		return 1;
 	}
 	
-	@Override
-	public int getKillReward() {
-		return 200;
-	}
-	
-	@Override
-	public int getInventorySlot() {
-		return 3;
+	private void explosionEffect(Location loc, double x, double y, double z) {
+		loc.getWorld().createExplosion(loc.getX() + x, loc.getY() + y, loc.getZ() + z, 0, false, false);
 	}
 }

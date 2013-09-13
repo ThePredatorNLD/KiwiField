@@ -1,5 +1,6 @@
 package me.KiwiLetsPlay.KiwiField.item.equipment;
 
+import me.KiwiLetsPlay.KiwiField.item.ItemType;
 import me.KiwiLetsPlay.KiwiField.item.Items;
 import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
 
@@ -10,16 +11,29 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class KevlarAndHelmet implements Equipment {
 	
+	// GameItem
 	@Override
 	public String getName() {
 		return "Kevlar & Helmet";
 	}
 	
 	@Override
-	public ItemStack getItemStack() {
-		return ItemFactory.getItem(Material.LEATHER_HELMET, "Helmet", "Equipment");
+	public ItemType getType() {
+		return ItemType.EQUIPMENT;
 	}
 	
+	@Override
+	public ItemStack getItemStack() {
+		return ItemFactory.getItem(this, Material.LEATHER_HELMET, "Helmet");
+	}
+	
+	// Buyable
+	@Override
+	public int getPrice() {
+		return 1000;
+	}
+	
+	// Equipment
 	@Override
 	public void buy(Player p) {
 		ItemStack is = getItemStack();
@@ -28,10 +42,5 @@ public class KevlarAndHelmet implements Equipment {
 		is.setItemMeta(im);
 		p.getInventory().setHelmet(is);
 		Items.KEVLAR_VEST.buy(p);
-	}
-	
-	@Override
-	public int getPrice() {
-		return 1000;
 	}
 }

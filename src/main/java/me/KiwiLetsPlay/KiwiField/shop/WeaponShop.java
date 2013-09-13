@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class WeaponShop {
+public final class WeaponShop {
 	
 	private static final String prefix = ChatColor.RESET.toString() + ChatColor.GOLD.toString() + "$ ";
 	

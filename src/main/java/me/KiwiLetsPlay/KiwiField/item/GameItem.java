@@ -6,5 +6,7 @@ public interface GameItem {
 	
 	public String getName();
 	
+	public ItemType getType();
+	
 	public ItemStack getItemStack();
 }
