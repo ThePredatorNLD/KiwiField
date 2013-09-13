@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -62,7 +63,7 @@ public class KiwiField extends JavaPlugin {
 		
 		// Clean up map
 		World w = game.getCurrentWorld();
-		for (Entity e : w.getEntitiesByClasses(Projectile.class, Animals.class, Monster.class)) {
+		for (Entity e : w.getEntitiesByClasses(Projectile.class, Animals.class, Monster.class, Item.class)) {
 			e.remove();
 		}
 		
