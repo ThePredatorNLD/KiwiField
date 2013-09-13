@@ -54,7 +54,9 @@ public final class ProjectileUtil {
 			}
 		}
 		if (!(isWeaponCooledDown(player))) return false;
-		if (!(Ammunition.fromItemStack(player.getItemInHand()).shoot())) {
+		Ammunition a = Ammunition.fromItemStack(player.getItemInHand());
+		if (a == null) return false;
+		if (!a.shoot()) {
 			player.playSound(player.getLocation(), Sound.CLICK, 0.5f, 1.75f);
 			setWeaponCooldown(player, g, true);
 			return false;
@@ -129,7 +131,11 @@ public final class ProjectileUtil {
 		weaponCooldown.put(player.getName(), 200L);
 		if (i instanceof Gun) {
 			Ammunition ammo = Ammunition.fromItemStack(is);
-			player.setLevel(ammo.getBackupAmmo());
+			if (ammo == null) {
+				player.setLevel(0);
+			} else {
+				player.setLevel(ammo.getBackupAmmo());
+			}
 		} else {
 			player.setLevel(0);
 		}
@@ -226,6 +232,7 @@ public final class ProjectileUtil {
 		if (!(w instanceof Gun)) return;
 		
 		Ammunition a = Ammunition.fromItemStack(player.getItemInHand());
+		if (a == null) return;
 		if (a.getBackupAmmo() == 0) return;
 		if (a.getPrimaryAmmo() == ((Gun) w).getAmmoCapacity()) return;
 		
