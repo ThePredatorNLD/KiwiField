@@ -34,12 +34,12 @@ public class DesertEagle implements Gun {
 	
 	@Override
 	public double getDamage() {
-		return 8;
+		return 12.6;
 	}
 	
 	@Override
 	public int getFiringCooldown() {
-		return 390;
+		return 240;
 	}
 	
 	@Override
@@ -65,7 +65,7 @@ public class DesertEagle implements Gun {
 	
 	@Override
 	public double getBaseRecoil() {
-		return 9;
+		return 8.0;
 	}
 	
 	@Override
@@ -75,7 +75,7 @@ public class DesertEagle implements Gun {
 	
 	@Override
 	public double getBulletSpeed() {
-		return 8;
+		return 8.0;
 	}
 	
 	@Override
