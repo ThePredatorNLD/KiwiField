@@ -4,13 +4,13 @@ import me.KiwiLetsPlay.KiwiField.KiwiField;
 import me.KiwiLetsPlay.KiwiField.item.ItemType;
 import me.KiwiLetsPlay.KiwiField.util.ItemFactory;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.comphenix.packetwrapper.Packet3FParticle;
@@ -70,8 +70,7 @@ public class SmokeGrenade implements Grenade {
 	// Grenade
 	@Override
 	public void explode(Item i) {
-		AreaSmoker as = new AreaSmoker(i.getLocation());
-		Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), as, 3);
+		new AreaSmoker(i.getLocation());
 	}
 	
 	@Override
@@ -84,27 +83,27 @@ public class SmokeGrenade implements Grenade {
 		return 1;
 	}
 	
-	private class AreaSmoker implements Runnable {
+	private class AreaSmoker extends BukkitRunnable {
 		
 		private Location l;
 		private int life;
 		
 		AreaSmoker(Location loc) {
 			l = loc;
+			runTaskTimer(KiwiField.getInstance(), 1, 3);
 		}
 		
 		@Override
 		public void run() {
 			++life;
-			if (life < 90) {
-				Location l2 = l.clone();
-				l2.add(Math.random() * 3d - 1.5, Math.random() * 2d + 0.5d, Math.random() * 3d - 1.5);
-				Bukkit.getScheduler().runTaskLater(KiwiField.getInstance(), this, 3);
-				
-				Vector offset = new Vector(1.8, 1.0, 1.8);
-				Packet3FParticle particlePacket = new Packet3FParticle(ParticleEffect.HUGE_EXPLOSION, 5, l, offset);
-				ProtocolLibrary.getProtocolManager().broadcastServerPacket(particlePacket.getHandle());
+			if (life > 100) {
+				cancel();
+				return;
 			}
+			
+			Vector offset = new Vector(1.8, 1.0, 1.8);
+			Packet3FParticle particlePacket = new Packet3FParticle(ParticleEffect.HUGE_EXPLOSION, 5, l, offset);
+			ProtocolLibrary.getProtocolManager().broadcastServerPacket(particlePacket.getHandle());
 		}
 	}
 }
