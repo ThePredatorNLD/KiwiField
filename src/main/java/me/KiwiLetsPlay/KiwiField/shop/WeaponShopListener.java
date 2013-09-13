@@ -12,6 +12,7 @@ import me.KiwiLetsPlay.KiwiField.item.equipment.Equipment;
 import me.KiwiLetsPlay.KiwiField.item.weapon.grenade.Grenade;
 import me.KiwiLetsPlay.KiwiField.item.weapon.gun.Gun;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,6 +22,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class WeaponShopListener implements Listener {
@@ -62,6 +64,7 @@ public class WeaponShopListener implements Listener {
 			return;
 		}
 		
+		int lastSlot = p.getInventory().getHeldItemSlot();
 		ItemStack is = b.getItemStack();
 		if (b instanceof Grenade) {
 			Grenade g = (Grenade) b;
@@ -114,6 +117,12 @@ public class WeaponShopListener implements Listener {
 		} else {
 			return;
 		}
+		
+		if (p.getInventory().getHeldItemSlot() == lastSlot) {
+			PlayerItemHeldEvent event = new PlayerItemHeldEvent(p, 8, lastSlot);
+			Bukkit.getPluginManager().callEvent(event);
+		}
+		
 		KiwiField.getCurrentGame().getStatsTracker().setMoney(p, money - b.getPrice());
 	}
 	
