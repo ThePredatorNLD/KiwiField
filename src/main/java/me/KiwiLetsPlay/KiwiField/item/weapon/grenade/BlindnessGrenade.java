@@ -68,7 +68,7 @@ public class BlindnessGrenade implements Grenade {
 	// Grenade
 	@Override
 	public void explode(Item i) {
-		for (Entity e : i.getNearbyEntities(25, 15, 25)) {
+		for (Entity e : i.getNearbyEntities(25, 25, 25)) {
 			if (!(e instanceof LivingEntity)) continue;
 			LivingEntity le = (LivingEntity) e;
 			
@@ -83,11 +83,10 @@ public class BlindnessGrenade implements Grenade {
 				continue;
 			}
 			
-			Vector d1 = le.getLocation().getDirection();
+			Vector d1 = le.getLocation().getDirection().setY(0d).normalize();
 			double dx = i.getLocation().getX() - le.getLocation().getX();
-			double dy = i.getLocation().getY() - le.getLocation().getY() - le.getEyeHeight();
 			double dz = i.getLocation().getZ() - le.getLocation().getZ();
-			Vector d2 = new Vector(dx, dy, dz).normalize();
+			Vector d2 = new Vector(dx, 0d, dz).normalize();
 			
 			double arc = d1.dot(d2);
 			if (arc > 0.6) {
