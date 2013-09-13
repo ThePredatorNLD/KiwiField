@@ -90,7 +90,7 @@ public class WeaponShopListener implements Listener {
 			}
 			int slot = ((Gun) b).getInventorySlot();
 			if (slot < 2) { // Primary or secondary
-				clearItemSlot(p, slot);
+				clearItemSlot(p, slot, KiwiField.getCurrentGame().hasMoneySystem());
 				p.getInventory().setItem(slot, is);
 				p.getInventory().setHeldItemSlot(slot);
 			} else { // Melee
@@ -126,11 +126,13 @@ public class WeaponShopListener implements Listener {
 		KiwiField.getCurrentGame().getStatsTracker().setMoney(p, money - b.getPrice());
 	}
 	
-	private void clearItemSlot(Player p, int slot) {
+	private void clearItemSlot(Player p, int slot, boolean drop) {
 		ItemStack is = p.getInventory().getItem(slot);
 		if (is == null) return;
 		is.setAmount(1);
-		p.getWorld().dropItemNaturally(p.getLocation(), is);
+		if (drop) {
+			p.getWorld().dropItemNaturally(p.getLocation(), is);
+		}
 		p.getInventory().clear(slot);
 	}
 }
