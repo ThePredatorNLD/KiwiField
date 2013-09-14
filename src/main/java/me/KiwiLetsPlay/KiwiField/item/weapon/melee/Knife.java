@@ -77,4 +77,9 @@ public class Knife implements MeleeWeapon {
 	public double getAttackRange() {
 		return 1.5;
 	}
+	
+	@Override
+	public void playSecondaryAttackSound(Player p) {
+		p.playSound(p.getLocation(), Sound.ANVIL_USE, 0.2f, 1f);
+	}
 }

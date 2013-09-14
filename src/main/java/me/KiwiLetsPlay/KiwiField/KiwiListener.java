@@ -70,12 +70,6 @@ public class KiwiListener implements Listener {
 			return;
 		}
 		
-		if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
-		
-		ProjectileUtil.setUsingKnife(player, (MeleeWeapon) w, false, true);
-		w.playFiringSound(player);
-		KiwiField.getCurrentGame().getStatsTracker().registerWeaponUsed(player, w);
-		
 		EntityDamageByEntityEvent e = new EntityDamageByEntityEvent(player, entity, DamageCause.ENTITY_ATTACK, -1d);
 		Bukkit.getPluginManager().callEvent(e);
 	}
@@ -289,6 +283,9 @@ public class KiwiListener implements Listener {
 			float diff = Math.abs(damager.getLocation().getYaw() - entity.getLocation().getYaw());
 			if (diff > 180) diff -= 360;
 			
+			if (entity instanceof Player && KiwiField.getCurrentGame().isSpawnProtected((Player) entity)) return;
+			if (!(ProjectileUtil.isWeaponCooledDown(damager))) return;
+			
 			if (event.getDamage() == -1) {
 				if (Math.abs(diff) < 60) {
 					damage = m.getBackstabDamage();
@@ -296,21 +293,20 @@ public class KiwiListener implements Listener {
 				} else {
 					damage = m.getDamage();
 				}
+				m.playFiringSound(damager);
 			} else {
-				if (entity instanceof Player && KiwiField.getCurrentGame().isSpawnProtected((Player) entity)) return;
-				if (!(ProjectileUtil.isWeaponCooledDown(damager))) return;
-				
 				if (Math.abs(diff) < 60) {
 					damage = m.getSecondaryBackstabDamage();
 					entity.getWorld().playEffect(entity.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 				} else {
 					damage = m.getSecondaryDamage();
 				}
-				KiwiField.getCurrentGame().setSpawnProtected(damager, false);
-				ProjectileUtil.setUsingKnife(damager, m, true, true);
-				KiwiField.getCurrentGame().getStatsTracker().registerWeaponUsed(damager, w);
-				w.playFiringSound(damager);
+				m.playSecondaryAttackSound(damager);
 			}
+			
+			KiwiField.getCurrentGame().setSpawnProtected(damager, false);
+			ProjectileUtil.setUsingKnife(damager, m, true, true);
+			KiwiField.getCurrentGame().getStatsTracker().registerWeaponUsed(damager, w);
 			
 			// Make sure that the player will take damage
 			entity.setNoDamageTicks(0);
