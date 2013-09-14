@@ -39,7 +39,7 @@ public class Knife implements MeleeWeapon {
 	
 	@Override
 	public void playFiringSound(Player p) {
-		p.playSound(p.getLocation(), Sound.ANVIL_LAND, 0.2f, 1f);
+		p.getWorld().playSound(p.getLocation(), Sound.ANVIL_LAND, 0.2f, 1f);
 	}
 	
 	@Override
@@ -80,6 +80,6 @@ public class Knife implements MeleeWeapon {
 	
 	@Override
 	public void playSecondaryAttackSound(Player p) {
-		p.playSound(p.getLocation(), Sound.ANVIL_USE, 0.2f, 1f);
+		p.getWorld().playSound(p.getLocation(), Sound.ANVIL_USE, 0.2f, 1f);
 	}
 }

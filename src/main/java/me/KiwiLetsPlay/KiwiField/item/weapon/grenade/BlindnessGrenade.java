@@ -46,7 +46,7 @@ public class BlindnessGrenade implements Grenade {
 	
 	@Override
 	public void playFiringSound(Player p) {
-		p.playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1f, 1f);
+		p.getWorld().playSound(p.getLocation(), Sound.BAT_TAKEOFF, 1f, 1f);
 	}
 	
 	@Override
