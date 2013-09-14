@@ -72,12 +72,12 @@ public class KiwiListener implements Listener {
 		
 		if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
 		
-		EntityDamageByEntityEvent e = new EntityDamageByEntityEvent(player, entity, DamageCause.ENTITY_ATTACK, -1d);
-		Bukkit.getPluginManager().callEvent(e);
-		
 		ProjectileUtil.setUsingKnife(player, (MeleeWeapon) w, false, true);
 		w.playFiringSound(player);
 		KiwiField.getCurrentGame().getStatsTracker().registerWeaponUsed(player, w);
+		
+		EntityDamageByEntityEvent e = new EntityDamageByEntityEvent(player, entity, DamageCause.ENTITY_ATTACK, -1d);
+		Bukkit.getPluginManager().callEvent(e);
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
@@ -93,13 +93,7 @@ public class KiwiListener implements Listener {
 				event.setCancelled(true);
 			}
 			Weapon w = Items.getWeaponByPlayer(player);
-			if (w instanceof MeleeWeapon) {
-				if (!(ProjectileUtil.isWeaponCooledDown(player))) return;
-				
-				KiwiField.getCurrentGame().setSpawnProtected(player, false);
-				KiwiField.getCurrentGame().getStatsTracker().registerWeaponUsed(player, w);
-				w.playFiringSound(player);
-			} else if (w instanceof Gun) {
+			if (w instanceof Gun) {
 				ProjectileUtil.startReloading(player);
 			}
 		} else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -230,7 +224,6 @@ public class KiwiListener implements Listener {
 			}
 			break;
 		case ENTITY_ATTACK:
-			// TODO: Filter out punching with weapons.
 			EntityDamageByEntityEvent entityDamage = (EntityDamageByEntityEvent) lastDmg;
 			if (entityDamage.getDamager() == null || entityDamage.getDamager().getType() != EntityType.PLAYER) {
 				// Death caused by a vanilla mob, don't alter
@@ -289,7 +282,6 @@ public class KiwiListener implements Listener {
 			Player damager = (Player) event.getDamager();
 			LivingEntity entity = (LivingEntity) event.getEntity();
 			Weapon w = Items.getWeaponByPlayer(damager);
-			
 			if (!(w instanceof MeleeWeapon)) return;
 			MeleeWeapon m = (MeleeWeapon) w;
 			
@@ -314,6 +306,7 @@ public class KiwiListener implements Listener {
 				} else {
 					damage = m.getSecondaryDamage();
 				}
+				KiwiField.getCurrentGame().setSpawnProtected(damager, false);
 				ProjectileUtil.setUsingKnife(damager, m, true, true);
 				KiwiField.getCurrentGame().getStatsTracker().registerWeaponUsed(damager, w);
 				w.playFiringSound(damager);

@@ -65,8 +65,8 @@ public final class Items {
 				e.printStackTrace();
 				continue;
 			}
-			if (o instanceof Buyable) {
-				addItem((Buyable) o);
+			if (o instanceof GameItem) {
+				addItem((GameItem) o);
 			}
 		}
 	}
