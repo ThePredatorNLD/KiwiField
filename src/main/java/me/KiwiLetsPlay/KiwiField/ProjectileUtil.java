@@ -128,8 +128,9 @@ public final class ProjectileUtil {
 	
 	public static void switchWeapon(Player player, ItemStack is) {
 		GameItem i = Items.getItemByItemStack(is);
+		if (i == null) return;
 		weaponCooldown.put(player.getName(), System.currentTimeMillis() + 500L);
-		// TODO: Play sound
+		player.playSound(player.getLocation(), Sound.CHEST_OPEN, 0.4f, 1f);
 		if (i instanceof Gun) {
 			Ammunition ammo = Ammunition.fromItemStack(is);
 			if (ammo == null) {
