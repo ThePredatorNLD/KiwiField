@@ -30,12 +30,12 @@ public class AWP implements Gun {
 	// Weapon
 	@Override
 	public double getDamage() {
-		return 5.0;
+		return 46.0;
 	}
 	
 	@Override
 	public int getFiringCooldown() {
-		return 90;
+		return 1440;
 	}
 	
 	@Override
@@ -45,7 +45,7 @@ public class AWP implements Gun {
 	
 	@Override
 	public int getKillReward() {
-		return 600;
+		return 100;
 	}
 	
 	@Override
@@ -72,12 +72,12 @@ public class AWP implements Gun {
 	
 	@Override
 	public double getBaseRecoil() {
-		return 3.0;
+		return 0.1;
 	}
 	
 	@Override
 	public double getRecoilModifier() {
-		return 0.5;
+		return 100;
 	}
 	
 	@Override
@@ -87,7 +87,7 @@ public class AWP implements Gun {
 	
 	@Override
 	public int getReloadTime() {
-		return 3800;
+		return 3666;
 	}
 	
 	@Override
