@@ -68,7 +68,7 @@ public class BlindnessGrenade implements Grenade {
 	// Grenade
 	@Override
 	public void explode(Item i) {
-		for (Entity e : i.getNearbyEntities(25, 25, 25)) {
+		for (Entity e : i.getNearbyEntities(30, 30, 30)) {
 			if (!(e instanceof LivingEntity)) continue;
 			LivingEntity le = (LivingEntity) e;
 			
@@ -77,7 +77,7 @@ public class BlindnessGrenade implements Grenade {
 			}
 			
 			if (!le.hasLineOfSight(i)) {
-				if (le.getLocation().distanceSquared(i.getLocation()) < 25) {
+				if (le.getLocation().distanceSquared(i.getLocation()) < 36) {
 					le.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 1));
 				}
 				continue;
@@ -89,12 +89,14 @@ public class BlindnessGrenade implements Grenade {
 			Vector d2 = new Vector(dx, 0d, dz).normalize();
 			
 			double arc = d1.dot(d2);
-			if (arc > 0.6) {
-				double dist = Math.max(1, i.getLocation().distance(le.getLocation()) / 5);
-				double time = 200 * arc / dist;
+			if (arc > 0.5) {
+				double dist = Math.max(1, i.getLocation().distance(le.getLocation()) / 10);
+				double time = 300 * arc / dist;
 				le.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) time, 1));
-			} else if (le.getLocation().distanceSquared(i.getLocation()) < 100) {
-				le.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 1));
+			} else if (le.getLocation().distanceSquared(i.getLocation()) < 400) {
+				double dist = Math.max(1, i.getLocation().distance(le.getLocation()) / 10);
+				double time = 10 / dist;
+				le.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, (int) time));
 			}
 		}
 	}
